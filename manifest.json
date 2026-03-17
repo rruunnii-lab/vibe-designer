@@ -1,0 +1,13 @@
+{
+  "name": "Vibe Designer",
+  "id": "vibe-designer-local",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "editorType": ["figma"],
+  "networkAccess": {
+    "allowedDomains": ["https://*.anthropic.com"],
+    "devAllowedDomains": ["http://localhost:9800"],
+    "reasoning": "Connects to local bridge server for reading/writing component data"
+  }
+}

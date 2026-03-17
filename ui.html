@@ -1,0 +1,2657 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 12px;
+    color: #171717;
+    padding: 12px;
+    background: #ffffff;
+    overflow-x: hidden;
+  }
+
+  h2 {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    margin-bottom: 4px;
+    color: #000000;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .subtitle { font-size: 11px; color: #737373; margin-bottom: 12px; letter-spacing: 1px; }
+  h3 { font-size: 12px; margin-bottom: 6px; color: #737373; }
+
+  button {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    padding: 8px 16px;
+    border: 1px solid;
+
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+  button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .btn-primary {
+    background: #f5f5f5;
+    color: #000000;
+    border-color: #000000;
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: #ebebeb;
+
+  }
+  .btn-secondary {
+    background: #fafafa;
+    color: #737373;
+    border-color: #000000;
+  }
+  .btn-secondary:hover:not(:disabled) { background: #f5f5f5; }
+  .btn-success {
+    background: #f5f5f5;
+    color: #404040;
+    border-color: #000000;
+  }
+  .btn-success:hover:not(:disabled) {
+    background: #ebebeb;
+
+  }
+  .btn-apply {
+    background: #f5f5f5;
+    color: #525252;
+    border-color: #000000;
+    width: 100%;
+
+  }
+  .btn-apply:hover:not(:disabled) {
+    background: #ebebeb;
+
+  }
+
+  .scan-btn-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .scan-holo-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: #fafafa;
+    border: 1px solid #000000;
+
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s;
+    width: 100%;
+    flex: 1;
+  }
+  .scan-holo-btn:hover {
+    background: #f5f5f5;
+    border-color: #000000;
+  }
+  .scan-holo-btn:active {
+    transform: scale(0.97);
+  }
+  .scan-icon {
+    width: 32px;
+    height: 32px;
+  }
+  .scan-holo-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: #000000;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .step-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: stretch;
+  }
+
+  .step {
+    background: #fafafa;
+    border: 1px solid #000000;
+
+    padding: 10px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .step-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .step-number {
+    background: #f5f5f5;
+    color: #000000;
+    width: 22px;
+    height: 22px;
+    border: 1px solid #000000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .step-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    color: #171717;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .step-desc { font-size: 11px; color: #a3a3a3; margin-bottom: 8px; }
+
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .server-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    padding: 4px 10px;
+
+    border: 1px solid;
+  }
+  .server-status.online {
+    background: #f5f5f5;
+    color: #000000;
+    border-color: #000000;
+  }
+  .server-status.offline {
+    background: #f5f5f5;
+    color: #525252;
+    border-color: #000000;
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+
+  }
+  .dot.online { background: #16a34a; box-shadow: 0 0 4px rgba(22, 163, 74, 0.4); }
+  .dot.offline { background: #525252; box-shadow: 0 0 4px rgba(0, 0, 0, 0.3); }
+
+  .holo-toggle-area {
+    cursor: pointer;
+    flex: 1;
+  }
+  .watching {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 12px;
+    padding: 8px 14px;
+
+    background: #f5f5f5;
+    color: #525252;
+    border: 1px solid #000000;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    transition: all 0.2s;
+  }
+  .watching:hover {
+    background: #ebebeb;
+    border-color: #000000;
+  }
+  .watching.off {
+    background: #fafafa;
+    border-color: #000000;
+    color: #a3a3a3;
+  }
+  .watching.off .holo-icon {
+    animation: none;
+    filter: none;
+    opacity: 0.3;
+  }
+  .watching.off .watching-text {
+    animation: none;
+    opacity: 0.4;
+  }
+  .holo-icon {
+    width: 28px;
+    height: 28px;
+    animation: pulse 3s ease-in-out infinite;
+  }
+  .watching-text {
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    opacity: 0.8;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .component-card {
+    background: #fafafa;
+    border: 1px solid #000000;
+
+    padding: 8px;
+    margin-bottom: 6px;
+  }
+  .component-name {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    margin-bottom: 4px;
+    color: #000000;
+    letter-spacing: 0.5px;
+  }
+  .prop-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 2px;
+    font-size: 11px;
+  }
+  .prop-name { font-weight: 600; color: #333333; }
+  .prop-values { color: #a3a3a3; }
+
+
+
+  .status {
+    padding: 8px;
+
+    margin-bottom: 8px;
+    font-size: 11px;
+    border: 1px solid;
+  }
+  .status-info {
+    background: #fafafa;
+    color: #525252;
+    border-color: #000000;
+  }
+  .status-error {
+    background: #f5f5f5;
+    color: #525252;
+    border-color: #000000;
+  }
+  .status-success {
+    background: #f5f5f5;
+    color: #404040;
+    border-color: #000000;
+  }
+
+  #results-area {
+    max-height: 280px;
+    overflow-y: auto;
+  }
+
+  .stats-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    color: #000000;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+
+    border: 1px solid #000000;
+    background: #f5f5f5;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .stats-btn:hover {
+    background: #ebebeb;
+    border-color: #000000;
+  }
+  .stats-btn .stats-toggle-icon {
+    font-size: 8px;
+    color: #000000;
+    transition: transform 0.2s;
+  }
+  .stats-btn .stats-toggle-icon.open { transform: rotate(180deg); }
+  .stats-panel {
+    margin-top: 0;
+    margin-bottom: 10px;
+    border: 1px solid #000000;
+
+    background: #fafafa;
+    position: relative;
+    overflow: hidden;
+    display: none;
+  }
+  .stats-panel.open { display: block; }
+  .stats-body {
+    padding: 10px;
+  }
+  .stats-counters {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .stat-card {
+    background: #ffffff;
+    border: 1px solid #000000;
+
+    padding: 8px;
+    text-align: center;
+  }
+  .stat-value {
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #171717;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .stat-label {
+    font-size: 9px;
+    color: #a3a3a3;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .stat-card.wide {
+    grid-column: 1 / -1;
+  }
+  .stat-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+    justify-content: center;
+  }
+  .stat-bar-segment {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+  }
+  .stat-dot {
+    width: 6px;
+    height: 6px;
+
+  }
+  .stat-dot.auto { background: #000000; }
+  .stat-dot.manual { background: #525252; }
+
+  .history-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+    color: #737373;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .history-list {
+    max-height: 140px;
+    overflow-y: auto;
+  }
+  .history-list::-webkit-scrollbar { width: 3px; }
+  .history-list::-webkit-scrollbar-track { background: transparent; }
+  .history-list::-webkit-scrollbar-thumb { background: #d4d4d4; }
+  .history-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    border-bottom: 1px solid #000000;
+    font-size: 10px;
+  }
+  .history-item:last-child { border-bottom: none; }
+  .history-icon {
+    width: 18px;
+    height: 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    flex-shrink: 0;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+  }
+  .history-icon.scan { background: #f5f5f5; color: #000000; }
+  .history-icon.auto { background: #f5f5f5; color: #404040; }
+  .history-icon.manual { background: #f5f5f5; color: #525252; }
+  .history-icon.variables { background: #f5f5f5; color: #525252; }
+  .history-icon.deep-scan { background: #f5f5f5; color: #525252; }
+  .history-icon.generate { background: #f5f5f5; color: #525252; }
+  .history-icon.refresh { background: #f5f5f5; color: #404040; }
+  .history-detail {
+    flex: 1;
+    color: #737373;
+  }
+  .history-time {
+    color: #a3a3a3;
+    font-size: 9px;
+    flex-shrink: 0;
+  }
+  #results-area::-webkit-scrollbar { width: 4px; }
+  #results-area::-webkit-scrollbar-track { background: transparent; }
+  #results-area::-webkit-scrollbar-thumb { background: #d4d4d4; }
+
+  .resize-handle {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
+    cursor: ns-resize;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .resize-handle::after {
+    content: "";
+    width: 32px;
+    height: 3px;
+    border-top: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+
+  }
+  .resize-handle:hover::after {
+    border-top-color: #000000;
+    border-bottom-color: #000000;
+  }
+
+  /* Tabs */
+  .tab-bar {
+    display: flex;
+    gap: 0;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #000000;
+  }
+  .tab-btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 8px 14px;
+    background: transparent;
+    color: #a3a3a3;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tab-btn:hover { color: #737373; }
+  .tab-btn.active {
+    color: #171717;
+    border-bottom-color: #000000;
+  }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* Variables tab */
+  .var-collection {
+    background: #fafafa;
+    border: 1px solid #000000;
+
+    padding: 8px;
+    margin-bottom: 6px;
+  }
+  .var-collection-name {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    color: #525252;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .var-modes {
+    font-size: 10px;
+    color: #a3a3a3;
+    margin-bottom: 6px;
+  }
+  .var-mode-tag {
+    display: inline-block;
+    padding: 2px 6px;
+
+    background: #f5f5f5;
+    color: #525252;
+    border: 1px solid #000000;
+    font-size: 9px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-right: 4px;
+    margin-bottom: 2px;
+  }
+  .var-item {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 2px;
+    font-size: 11px;
+    align-items: baseline;
+  }
+  .var-name { font-weight: 600; color: #333333; }
+  .var-type {
+    font-size: 9px;
+    color: #a3a3a3;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .var-values { color: #a3a3a3; font-size: 10px; }
+  .var-scan-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px 20px;
+    background: #f5f5f5;
+    border: 1px solid #000000;
+
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s;
+    width: 100%;
+  }
+  .var-scan-btn:hover {
+    background: #ebebeb;
+    border-color: #000000;
+  }
+  .var-scan-btn .scan-holo-label {
+    color: #525252;
+  }
+  #var-results { margin-top: 8px; max-height: 400px; overflow-y: auto; }
+  #var-results::-webkit-scrollbar { width: 4px; }
+  #var-results::-webkit-scrollbar-track { background: transparent; }
+  #var-results::-webkit-scrollbar-thumb { background: #d4d4d4; }
+
+  /* --- Refresh tab --- */
+  .refresh-scan-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px 20px;
+    background: #f5f5f5;
+    border: 1px solid #000000;
+
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s;
+    width: 100%;
+  }
+  .refresh-scan-btn:hover {
+    background: #ebebeb;
+    border-color: #000000;
+  }
+  .refresh-scan-btn .scan-holo-label {
+    color: #404040;
+  }
+
+  /* Collapsible sections */
+  .collapse-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 8px;
+    background: #fafafa;
+    border: 1px solid #000000;
+
+    cursor: pointer;
+    margin-bottom: 4px;
+    transition: all 0.2s;
+  }
+  .collapse-header:hover { border-color: #000000; }
+  .collapse-arrow {
+    font-size: 8px;
+    color: #a3a3a3;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .collapse-arrow.open { transform: rotate(90deg); }
+  .collapse-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    color: #333333;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    flex: 1;
+  }
+  .collapse-count {
+    font-size: 10px;
+    color: #a3a3a3;
+  }
+  .collapse-body {
+    display: none;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  .collapse-body.open { display: block; }
+  .collapse-body::-webkit-scrollbar { width: 4px; }
+  .collapse-body::-webkit-scrollbar-track { background: transparent; }
+  .collapse-body::-webkit-scrollbar-thumb { background: #d4d4d4; }
+
+  /* Scan info bar */
+  .scan-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 8px;
+    background: #fafafa;
+    border: 1px solid #000000;
+
+    margin-bottom: 6px;
+    font-size: 10px;
+  }
+  .scan-info-name {
+    color: #171717;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 70%;
+  }
+  .scan-info-time {
+    color: #a3a3a3;
+    flex-shrink: 0;
+  }
+
+  /* Matrix tab */
+  .matrix-scan-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: #f5f5f5;
+    border: 1px solid #000000;
+
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s;
+    width: 100%;
+  }
+  .matrix-scan-btn:hover {
+    background: #ebebeb;
+    border-color: #000000;
+  }
+  .matrix-instance {
+    background: #fafafa;
+    border: 1px solid #000000;
+
+    padding: 8px;
+    margin-bottom: 6px;
+  }
+  .matrix-instance-name {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    color: #525252;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .matrix-instance-depth {
+    font-size: 9px;
+    color: #a3a3a3;
+    font-family: 'Inter', sans-serif;
+  }
+  .matrix-prop-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    padding-left: 8px;
+    border-bottom: 1px solid #000000;
+  }
+  .matrix-prop-row:last-child { border-bottom: none; }
+  .matrix-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #000000;
+
+    background: #ffffff;
+    cursor: pointer;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .matrix-checkbox:checked {
+    background: #f5f5f5;
+    border-color: #000000;
+  }
+  .matrix-checkbox:checked::after {
+    content: "\2713";
+    position: absolute;
+    top: -1px;
+    left: 2px;
+    color: #525252;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .matrix-prop-key {
+    font-weight: 600;
+    color: #333333;
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+  .matrix-prop-value {
+    color: #737373;
+    font-size: 10px;
+    flex-shrink: 0;
+  }
+  .matrix-prop-options {
+    color: #a3a3a3;
+    font-size: 10px;
+  }
+  .matrix-counter {
+    background: #fafafa;
+    border: 1px solid #000000;
+
+    padding: 10px;
+    margin: 8px 0;
+    text-align: center;
+  }
+  .matrix-counter-number {
+    font-family: 'Inter', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: #525252;
+  }
+  .matrix-counter-label {
+    font-size: 10px;
+    color: #737373;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+  }
+  .matrix-counter-formula {
+    font-size: 10px;
+    color: #a3a3a3;
+    margin-top: 2px;
+  }
+  .matrix-counter-warning {
+    font-size: 10px;
+    color: #737373;
+    margin-top: 4px;
+  }
+  .matrix-settings {
+    display: flex;
+    gap: 12px;
+    margin: 8px 0;
+  }
+  .matrix-setting {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .matrix-setting label {
+    font-size: 10px;
+    color: #737373;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+  }
+  .matrix-setting input {
+    width: 50px;
+    padding: 4px 6px;
+    background: #ffffff;
+    border: 1px solid #000000;
+
+    color: #171717;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    text-align: center;
+  }
+  .matrix-setting input:focus { outline: none; border-color: #000000; }
+  .btn-generate {
+    background: #f5f5f5;
+    color: #525252;
+    border-color: #000000;
+    width: 100%;
+    margin-top: 4px;
+
+  }
+  .btn-generate:hover:not(:disabled) {
+    background: #ebebeb;
+
+  }
+  #matrix-tree {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: 8px;
+  }
+  #matrix-tree::-webkit-scrollbar { width: 4px; }
+  #matrix-tree::-webkit-scrollbar-track { background: transparent; }
+  #matrix-tree::-webkit-scrollbar-thumb { background: #d4d4d4; }
+  .matrix-nested-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 8px;
+    margin-top: 6px;
+    background: #fafafa;
+    border: 1px solid #000000;
+
+    cursor: pointer;
+    font-size: 10px;
+    color: #a3a3a3;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+  }
+  .matrix-nested-toggle:hover { color: #737373; border-color: #000000; }
+  .matrix-nested-toggle .toggle-arrow {
+    font-size: 8px;
+    transition: transform 0.2s;
+  }
+  .matrix-nested-toggle .toggle-arrow.open { transform: rotate(90deg); }
+  .matrix-nested-section { display: none; }
+  .matrix-nested-section.open { display: block; }
+
+  /* --- Result cards --- */
+  .result-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px;
+    background: #fafafa;
+    border: 1px solid #000000;
+    margin-bottom: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #171717;
+  }
+  .result-summary-errors { color: #525252; }
+
+  .result-card {
+    background: #ffffff;
+    border: 1px solid #000000;
+    margin-bottom: 6px;
+    overflow: hidden;
+  }
+  .result-card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    cursor: pointer;
+    background: #fafafa;
+    border-bottom: 1px solid #000000;
+  }
+  .result-card-header:hover {
+    background: #f5f5f5;
+  }
+  .result-card-arrow {
+    font-size: 8px;
+    color: #a3a3a3;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .result-card-arrow.open { transform: rotate(90deg); }
+  .result-card-name {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    color: #171717;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .result-card-type {
+    font-family: 'Inter', sans-serif;
+    font-size: 8px;
+    font-weight: 600;
+    padding: 2px 5px;
+    background: #f5f5f5;
+    color: #737373;
+    border: 1px solid #000000;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+  }
+  .result-card-locate {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5f5;
+    border: 1px solid #000000;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+  .result-card-locate:hover { background: #ebebeb; }
+  .result-card-locate.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  .result-card-locate svg { width: 14px; height: 14px; }
+
+  .result-card-body {
+    display: none;
+    padding: 8px;
+  }
+  .result-card-body.open { display: block; }
+
+  .result-thumbnails {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .result-thumb-col {
+    flex: 1;
+    text-align: center;
+  }
+  .result-thumb-label {
+    font-size: 9px;
+    font-weight: 600;
+    color: #a3a3a3;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .result-thumb-img {
+    width: 100%;
+    border: 1px solid #000000;
+    background: #fafafa;
+    display: block;
+  }
+  .result-thumb-img.before { opacity: 0.6; }
+  .result-thumb-placeholder {
+    width: 100%;
+    padding: 20px 8px;
+    border: 1px solid #000000;
+    background: #fafafa;
+    color: #a3a3a3;
+    font-size: 10px;
+    text-align: center;
+  }
+  .result-thumb-deleted {
+    position: relative;
+  }
+  .result-thumb-deleted::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.15);
+  }
+
+  /* Refresh tab results */
+  .refresh-frame-diff {
+    display: flex;
+    gap: 6px;
+    margin: 8px 0;
+  }
+  .refresh-frame-diff .result-thumb-col {
+    flex: 1;
+    text-align: center;
+  }
+  .refresh-frame-diff .result-thumb-img {
+    width: 100%;
+    border: 1px solid #000000;
+    background: #fafafa;
+    display: block;
+  }
+  .refresh-frame-diff .result-thumb-img.before { opacity: 0.6; }
+  .refresh-frame-diff .result-thumb-placeholder {
+    font-size: 9px;
+    color: #a3a3a3;
+    padding: 20px 0;
+    border: 1px dashed #d4d4d4;
+    background: #fafafa;
+  }
+  .refresh-section-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 8px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    color: #525252;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid #ebebeb;
+    background: #fafafa;
+    margin-bottom: 2px;
+    transition: all 0.2s;
+  }
+  .refresh-section-header:hover { border-color: #000000; }
+  .refresh-section-arrow {
+    font-size: 8px;
+    color: #a3a3a3;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .refresh-section-arrow.open { transform: rotate(90deg); }
+  .refresh-section-count {
+    font-size: 10px;
+    color: #a3a3a3;
+    margin-left: auto;
+  }
+  .refresh-section-body {
+    display: none;
+  }
+  .refresh-section-body.open { display: block; }
+  .refresh-skip-reason {
+    font-size: 9px;
+    color: #a3a3a3;
+    padding: 4px 8px 8px 8px;
+  }
+
+  .result-ops {
+    font-size: 10px;
+    color: #525252;
+  }
+  .result-op-line {
+    padding: 2px 0;
+    border-bottom: 1px solid #f5f5f5;
+  }
+  .result-op-line:last-child { border-bottom: none; }
+
+</style>
+</head>
+<body>
+
+<div style="display:flex;align-items:baseline;gap:8px;"><h2>Vibe Designer</h2><span style="font-size:10px;color:#a3a3a3;letter-spacing:1px;">created by Shurun Y.</span></div>
+
+<div class="top-bar">
+  <div id="server-status-area"></div>
+  <div class="stats-btn" id="stats-header">
+    Activity Log <span class="stats-toggle-icon" id="stats-toggle-icon">&#9660;</span>
+  </div>
+</div>
+<div class="stats-panel" id="stats-panel">
+  <div class="stats-body" id="stats-body">
+    <div class="stats-counters" style="grid-template-columns: 1fr 1fr 1fr;">
+      <div class="stat-card">
+        <div class="stat-value" id="stat-scans">0</div>
+        <div class="stat-label">Scans</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-applied">0</div>
+        <div class="stat-label">Operations</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-variants">0</div>
+        <div class="stat-label">Variants</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-var-scans">0</div>
+        <div class="stat-label">Var Scans</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-deep-scans">0</div>
+        <div class="stat-label">Deep Scans</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-refreshes">0</div>
+        <div class="stat-label">Refreshes</div>
+      </div>
+      <div class="stat-card wide">
+        <div class="stat-bar">
+          <div class="stat-bar-segment"><span class="stat-dot auto"></span><span id="stat-auto">0</span> Auto</div>
+          <div class="stat-bar-segment"><span class="stat-dot manual"></span><span id="stat-manual">0</span> Manual</div>
+        </div>
+        <div class="stat-label" style="margin-top: 4px;">Apply Breakdown</div>
+      </div>
+    </div>
+    <div class="history-title">Recent Activity</div>
+    <div class="history-list" id="history-list"></div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <div class="tab-btn active" data-tab="designer">Designer</div>
+  <div class="tab-btn" data-tab="matrix">Matrix</div>
+  <div class="tab-btn" data-tab="variables">Variables</div>
+  <div class="tab-btn" data-tab="refresh">Refresh</div>
+</div>
+
+<div class="tab-content active" id="tab-designer">
+
+<div class="step-grid">
+  <!-- Step 1: Scan & Push -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-number">1</div>
+      <div class="step-title">Scan & Push</div>
+    </div>
+    <div class="step-desc">Select a frame to scan, or scan the entire page.</div>
+    <div class="scan-btn-row">
+      <div class="scan-holo-btn" id="scan-btn">
+        <svg class="scan-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="#000000"><path d="M232,116h-4.72A100.21,100.21,0,0,0,140,28.72V24a12,12,0,0,0-24,0v4.72A100.21,100.21,0,0,0,28.72,116H24a12,12,0,0,0,0,24h4.72A100.21,100.21,0,0,0,116,227.28V232a12,12,0,0,0,24,0v-4.72A100.21,100.21,0,0,0,227.28,140H232a12,12,0,0,0,0-24Zm-92,87v-3a12,12,0,0,0-24,0v3a76.15,76.15,0,0,1-63-63h3a12,12,0,0,0,0-24H53a76.15,76.15,0,0,1,63-63v3a12,12,0,0,0,24,0V53a76.15,76.15,0,0,1,63,63h-3a12,12,0,0,0,0,24h3A76.15,76.15,0,0,1,140,203ZM128,84a44,44,0,1,0,44,44A44.05,44.05,0,0,0,128,84Zm0,64a20,20,0,1,1,20-20A20,20,0,0,1,128,148Z"/></svg>
+
+        <div class="scan-holo-label">Scan Frame</div>
+      </div>
+      <div class="scan-holo-btn scan-page-btn" id="scan-page-btn">
+        <svg class="scan-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="#000000"><path d="M216.49,79.52l-56-56A12,12,0,0,0,152,20H56A20,20,0,0,0,36,40V216a20,20,0,0,0,20,20H200a20,20,0,0,0,20-20V88A12,12,0,0,0,216.49,79.52ZM183,80H160V57ZM60,212V44h76V92a12,12,0,0,0,12,12h48V212Zm96.48-48.49a36,36,0,1,0-17,17l12,12a12,12,0,0,0,17-17ZM112,148a12,12,0,1,1,12,12A12,12,0,0,1,112,148Z"/></svg>
+
+        <div class="scan-holo-label">Scan Page</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2: Auto-apply -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-number">2</div>
+      <div class="step-title">Auto-Apply</div>
+    </div>
+    <div class="step-desc">Changes from Claude Code apply automatically.</div>
+    <div id="auto-label" class="holo-toggle-area"></div>
+    <div style="margin-top: 8px;">
+      <button class="btn-apply" id="manual-apply-btn">Apply Changes</button>
+    </div>
+  </div>
+</div>
+
+<div id="scan-info" class="scan-info" style="display:none;"></div>
+<div id="scan-results"></div>
+<div id="status-area"></div>
+<div id="results-area"></div>
+
+</div><!-- end tab-designer -->
+
+<div class="tab-content" id="tab-matrix">
+  <div class="step">
+    <div class="step-header">
+      <div class="step-number" style="border-color: #000000; color: #525252;">M</div>
+      <div class="step-title">Variant Matrix</div>
+    </div>
+    <div class="step-desc">Select a screen instance, deep scan to find all nested variant properties, then generate every combination.</div>
+    <div class="matrix-scan-btn" id="matrix-scan-btn">
+      <svg class="scan-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="#525252"><path d="M100,36H56A20,20,0,0,0,36,56v44a20,20,0,0,0,20,20h44a20,20,0,0,0,20-20V56A20,20,0,0,0,100,36ZM96,96H60V60H96ZM200,36H156a20,20,0,0,0-20,20v44a20,20,0,0,0,20,20h44a20,20,0,0,0,20-20V56A20,20,0,0,0,200,36Zm-4,60H160V60h36Zm-96,40H56a20,20,0,0,0-20,20v44a20,20,0,0,0,20,20h44a20,20,0,0,0,20-20V156A20,20,0,0,0,100,136Zm-4,60H60V160H96Zm104-60H156a20,20,0,0,0-20,20v44a20,20,0,0,0,20,20h44a20,20,0,0,0,20-20V156A20,20,0,0,0,200,136Zm-4,60H160V160h36Z"/></svg>
+
+      <div class="scan-holo-label" style="color: #525252;">Deep Scan</div>
+    </div>
+  </div>
+  <div id="matrix-status"></div>
+  <div id="matrix-tree"></div>
+  <div id="matrix-footer" style="display:none;">
+    <div id="matrix-counter" class="matrix-counter"></div>
+    <div class="matrix-settings">
+      <div class="matrix-setting">
+        <label>Columns</label>
+        <input type="number" id="matrix-cols" value="4" min="1" max="10">
+      </div>
+      <div class="matrix-setting">
+        <label>Spacing</label>
+        <input type="number" id="matrix-spacing" value="50" min="0" max="500">
+      </div>
+    </div>
+    <button class="btn-generate" id="matrix-generate-btn" disabled>Generate Variants</button>
+  </div>
+</div><!-- end tab-matrix -->
+
+<div class="tab-content" id="tab-variables">
+  <div class="step">
+    <div class="step-header">
+      <div class="step-number" style="border-color: #000000; color: #525252;">V</div>
+      <div class="step-title">Variable Scanner</div>
+    </div>
+    <div class="step-desc">Scan all local variables, collections, and modes from this file.</div>
+    <div class="var-scan-btn" id="var-scan-btn">
+      <svg class="scan-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="#525252"><path d="M68,102.06V40a12,12,0,0,0-24,0v62.06a36,36,0,0,0,0,67.88V216a12,12,0,0,0,24,0V169.94a36,36,0,0,0,0-67.88ZM56,148a12,12,0,1,1,12-12A12,12,0,0,1,56,148ZM164,88a36.07,36.07,0,0,0-24-33.94V40a12,12,0,0,0-24,0V54.06a36,36,0,0,0,0,67.88V216a12,12,0,0,0,24,0V121.94A36.07,36.07,0,0,0,164,88Zm-36,12a12,12,0,1,1,12-12A12,12,0,0,1,128,100Zm108,68a36.07,36.07,0,0,0-24-33.94V40a12,12,0,0,0-24,0v94.06a36,36,0,0,0,0,67.88V216a12,12,0,0,0,24,0V201.94A36.07,36.07,0,0,0,236,168Zm-36,12a12,12,0,1,1,12-12A12,12,0,0,1,200,180Z"/></svg>
+
+      <div class="scan-holo-label">Scan Variables</div>
+    </div>
+  </div>
+  <div id="var-status"></div>
+  <div id="var-results"></div>
+</div><!-- end tab-variables -->
+
+<div class="tab-content" id="tab-refresh">
+  <div class="step">
+    <div class="step-header">
+      <div class="step-number" style="border-color: #000000; color: #404040;">R</div>
+      <div class="step-title">Instance Refresh</div>
+    </div>
+    <div class="step-desc">Select a screen or frame, then refresh all nested instances to pick up the latest library changes. Variant and boolean selections are preserved. Note: manual overrides (fills, non-exposed text) will be reset.</div>
+    <div class="refresh-scan-btn" id="refresh-btn">
+      <svg class="scan-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="#404040"><path d="M228,48V96a12,12,0,0,1-12,12H168a12,12,0,0,1,0-24h19l-7.8-7.8a75.55,75.55,0,0,0-53.32-22.26h-.43A75.49,75.49,0,0,0,72.39,75.57,12,12,0,1,1,55.61,58.41a99.38,99.38,0,0,1,69.87-28.47H126A99.42,99.42,0,0,1,196.2,59.23L204,67V48a12,12,0,0,1,24,0ZM183.61,180.43a75.49,75.49,0,0,1-53.09,21.63h-.43A75.55,75.55,0,0,1,76.77,179.8L69,172H88a12,12,0,0,0,0-24H40a12,12,0,0,0-12,12v48a12,12,0,0,0,24,0V189l7.8,7.8A99.42,99.42,0,0,0,130,226.06h.56a99.38,99.38,0,0,0,69.87-28.47,12,12,0,0,0-16.78-17.16Z"/></svg>
+
+      <div class="scan-holo-label" style="color: #404040;">Refresh Instances</div>
+    </div>
+  </div>
+  <div id="refresh-status"></div>
+  <div id="refresh-results"></div>
+</div><!-- end tab-refresh -->
+
+<div class="resize-handle" id="resize-handle"></div>
+
+<script>
+  // Drag-to-resize handle
+  var resizeHandle = document.getElementById("resize-handle");
+  var isResizing = false;
+  var startX, startY, startWidth, startHeight;
+
+  resizeHandle.addEventListener("mousedown", function (e) {
+    isResizing = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    startWidth = window.innerWidth;
+    startHeight = window.innerHeight;
+    e.preventDefault();
+  });
+
+  document.addEventListener("mousemove", function (e) {
+    if (!isResizing) return;
+    var newHeight = Math.max(200, startHeight + (e.clientY - startY));
+    parent.postMessage({
+      pluginMessage: { type: "resize", width: startWidth, height: newHeight }
+    }, "*");
+  });
+
+  document.addEventListener("mouseup", function () {
+    isResizing = false;
+  });
+
+  var SERVER = "http://localhost:9800";
+
+  var scanBtn = document.getElementById("scan-btn");
+  var manualApplyBtn = document.getElementById("manual-apply-btn");
+  var autoLabel = document.getElementById("auto-label");
+  var autoEnabled = true;
+  var serverStatusArea = document.getElementById("server-status-area");
+  var scanResults = document.getElementById("scan-results");
+  var statusArea = document.getElementById("status-area");
+  var resultsArea = document.getElementById("results-area");
+
+  var lastRenamesTimestamp = 0;
+  var isApplying = false;
+
+    // --- Result card helpers ---
+    function uint8ToBase64(uint8) {
+      var binary = "";
+      for (var i = 0; i < uint8.length; i++) {
+        binary += String.fromCharCode(uint8[i]);
+      }
+      return btoa(binary);
+    }
+
+    var beforeThumbnails = {};
+    var afterThumbnails = {};
+    var pendingOperations = [];
+    var pendingCreatedNodes = [];
+    var lastGroupOrder = [];
+    var lastGroups = {};
+    var captureBeforeTimeout = null;
+    var applyCompleteTimeout = null;
+
+    // Refresh tab thumbnail state
+    var refreshBeforeThumbnail = null;
+    var refreshAfterThumbnail = null;
+    var refreshRootId = null;
+    var refreshBeforeTimeout = null;
+    var refreshAfterTimeout = null;
+    var refreshIsRunning = false;
+
+    function getNodeIdForOp(op) {
+      if (op.type === "property") return op.componentSetId;
+      if (op.type === "duplicate" || (op.type && op.type.indexOf("create_") === 0)) return null;
+      return op.id;
+    }
+
+    function getCardText(op) {
+      switch (op.type) {
+        case "component_set_name": return "Renamed to " + esc(op.newName);
+        case "variant": return "Renamed to " + esc(op.newName);
+        case "property": return "Property renamed to " + esc(op.newName);
+        case "move": return "Moved to (" + op.x + ", " + op.y + ")";
+        case "resize_node": return "Resized to " + op.width + " &times; " + op.height;
+        case "reorder": return "Reordered to index " + op.index;
+        case "text": return "Text changed to \"" + esc(op.newText || op.characters || "") + "\"";
+        case "swap_variant":
+          var lines = [];
+          var props = op.properties || {};
+          for (var k in props) {
+            if (props.hasOwnProperty(k)) lines.push("Variant changed: " + esc(k) + ": " + esc(props[k]));
+          }
+          return lines.join("<br>");
+        case "set_mode": return "Mode set to " + esc(op.variableMode || op.modeId || "");
+        case "delete": return "Deleted";
+        case "duplicate": return "Duplicated from " + esc(op.name || op.id || "source") + ", offset (" + (op.offsetX || 0) + ", " + (op.offsetY || 0) + ")";
+        default:
+          if (op.type && op.type.indexOf("create_") === 0) {
+            return "Created at (" + (op.x || 0) + ", " + (op.y || 0) + "), " + (op.width || 0) + " &times; " + (op.height || 0);
+          }
+          return esc(op.type);
+      }
+    }
+
+  var pollInterval = null;
+  var scanInfoEl = document.getElementById("scan-info");
+  var lastScanTime = null;
+  var lastScanName = "";
+  var scanTimerInterval = null;
+
+  function updateScanInfo() {
+    if (!lastScanTime) { scanInfoEl.style.display = "none"; return; }
+    scanInfoEl.style.display = "flex";
+    var elapsed = Math.floor((Date.now() - lastScanTime) / 1000);
+    var timeStr;
+    if (elapsed < 60) timeStr = "just now";
+    else if (elapsed < 3600) timeStr = Math.floor(elapsed / 60) + "m ago";
+    else timeStr = Math.floor(elapsed / 3600) + "h ago";
+    scanInfoEl.innerHTML =
+      '<span class="scan-info-name">' + esc(lastScanName) + '</span>' +
+      '<span class="scan-info-time">scanned ' + timeStr + '</span>';
+  }
+
+  function setStatus(msg, type) {
+    statusArea.innerHTML = '<div class="status status-' + type + '">' + msg + '</div>';
+  }
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  // Server status check
+  function checkServer() {
+    fetch(SERVER + "/status")
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        serverStatusArea.innerHTML =
+          '<div class="server-status online"><div class="dot online"></div>Server connected</div>';
+
+        // Auto-apply: detect new renames file
+        if (autoEnabled && !isApplying && data.renames && data.renamesTimestamp > lastRenamesTimestamp) {
+          lastRenamesTimestamp = data.renamesTimestamp;
+          lastApplyMode = "auto";
+          autoApply();
+        }
+      })
+      .catch(function () {
+        serverStatusArea.innerHTML =
+          '<div class="server-status offline"><div class="dot offline"></div>Server offline — run: node ~/Developer/vibe-designer/server.js</div>';
+      });
+  }
+
+  var watchIconSvg = '<svg class="holo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="#000000"><path d="M128,84a44,44,0,1,0,44,44A44.05,44.05,0,0,0,128,84Zm0,64a20,20,0,1,1,20-20A20,20,0,0,1,128,148Zm77.39,12.7A83.94,83.94,0,0,1,190.61,184a12,12,0,0,1-17.89-16,59.92,59.92,0,0,0,0-80,12,12,0,0,1,17.89-16,84.07,84.07,0,0,1,14.78,88.7ZM83.28,168a12,12,0,0,1-17.89,16,83.94,83.94,0,0,1,0-112A12,12,0,0,1,83.28,88a59.92,59.92,0,0,0,0,80ZM252,128a123.63,123.63,0,0,1-35.43,86.78A12,12,0,1,1,199.43,198a99.88,99.88,0,0,0,0-140,12,12,0,0,1,17.14-16.8A123.63,123.63,0,0,1,252,128ZM56.57,198a12,12,0,0,1-17.14,16.8,123.89,123.89,0,0,1,0-173.56A12,12,0,0,1,56.57,58a99.88,99.88,0,0,0,0,140Z"/></svg>';
+
+  function renderAutoLabel() {
+    if (autoEnabled) {
+      autoLabel.innerHTML = '<span class="watching">' + watchIconSvg + '<span class="watching-text">Watching for changes...</span></span>';
+    } else {
+      autoLabel.innerHTML = '<span class="watching off">' + watchIconSvg + '<span class="watching-text">Auto-apply paused</span></span>';
+    }
+  }
+
+  function startPolling() {
+    if (pollInterval) clearInterval(pollInterval);
+    pollInterval = setInterval(checkServer, 2000);
+    renderAutoLabel();
+  }
+
+  function stopPolling() {
+    if (pollInterval) clearInterval(pollInterval);
+    pollInterval = null;
+    renderAutoLabel();
+  }
+
+  autoLabel.addEventListener("click", function () {
+    autoEnabled = !autoEnabled;
+    if (autoEnabled) {
+      startPolling();
+    } else {
+      stopPolling();
+    }
+  });
+
+  // Initial check and start polling
+  checkServer();
+  startPolling();
+
+  // Apply: fetch renames, show them, apply, then ack
+  function autoApply() {
+    isApplying = true;
+    beforeThumbnails = {};
+    afterThumbnails = {};
+    pendingOperations = [];
+    pendingCreatedNodes = [];
+
+    setStatus("Changes detected — applying...", "info");
+
+    fetch(SERVER + "/renames")
+      .then(function (r) {
+        if (!r.ok) throw new Error("Server returned " + r.status);
+        return r.json();
+      })
+      .then(function (data) {
+        if (!Array.isArray(data) || data.length === 0) {
+          setStatus("No changes to apply.", "info");
+          isApplying = false;
+          return;
+        }
+        pendingOperations = data;
+
+        // Step 1: Capture before-thumbnails
+        parent.postMessage({ pluginMessage: { type: "capture-before", operations: data } }, "*");
+
+        // Safety timeout: if before-thumbnails never arrives, apply without them
+        captureBeforeTimeout = setTimeout(function() {
+          captureBeforeTimeout = null;
+          if (isApplying && !Object.keys(beforeThumbnails).length && pendingOperations.length) {
+            parent.postMessage({ pluginMessage: { type: "apply-renames", renames: pendingOperations } }, "*");
+          }
+        }, 8000);
+      })
+      .catch(function (err) {
+        setStatus("Server error: " + esc(String(err)), "error");
+        isApplying = false;
+      });
+  }
+
+  // Manual apply button
+  manualApplyBtn.addEventListener("click", function () {
+    if (isApplying) return;
+    lastRenamesTimestamp = 0;
+    lastApplyMode = "manual";
+    autoApply();
+  });
+
+  // Scan Frame (selection)
+  scanBtn.addEventListener("click", function () {
+    scanBtn.classList.add("scanning");
+    scanResults.innerHTML = '<div class="status status-info">Scanning selected frame...</div>';
+    parent.postMessage({ pluginMessage: { type: "scan-selection" } }, "*");
+  });
+
+  // Scan Page (entire page)
+  var scanPageBtn = document.getElementById("scan-page-btn");
+  scanPageBtn.addEventListener("click", function () {
+    scanPageBtn.classList.add("scanning");
+    scanResults.innerHTML = '<div class="status status-info">Scanning entire page...</div>';
+    parent.postMessage({ pluginMessage: { type: "scan-page" } }, "*");
+  });
+
+  // Messages from plugin sandbox
+  window.onmessage = function (event) {
+    var msg = event.data.pluginMessage;
+    if (!msg) return;
+
+    if (msg.type === "scan-result") {
+      scanBtn.classList.remove("scanning");
+      scanPageBtn.classList.remove("scanning");
+      if (msg.error) {
+        scanResults.innerHTML = '<div class="status status-error">' + esc(msg.error) + '</div>';
+        return;
+      }
+
+      fetch(SERVER + "/components", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(msg.data)
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (res.ok) {
+            var compCount = (msg.data.components || []).length;
+            var textCount = (msg.data.textNodes || []).length;
+            var instCount = (msg.data.instances || []).length;
+            // Determine scan name
+            if (msg.scanMode === "page" && msg.pageName) {
+              lastScanName = "Page: " + msg.pageName;
+            } else if (compCount > 0) {
+              lastScanName = msg.data.components[0].name;
+            } else if (instCount > 0) {
+              lastScanName = msg.data.instances[0].name;
+            } else if (textCount > 0) {
+              lastScanName = textCount + " text nodes";
+            } else {
+              lastScanName = "Selection";
+            }
+            lastScanTime = Date.now();
+            if (scanTimerInterval) clearInterval(scanTimerInterval);
+            scanTimerInterval = setInterval(updateScanInfo, 30000);
+            updateScanInfo();
+            renderScanned(msg.data);
+            var successDiv = document.createElement("div");
+            successDiv.className = "status status-success";
+            successDiv.textContent = "Scan data sent. Waiting for changes...";
+            scanResults.appendChild(successDiv);
+            recordEvent({ type: "scan", detail: compCount + " components, " + textCount + " text nodes" });
+            // Reset timestamp so we pick up the next renames file
+            lastRenamesTimestamp = 0;
+          } else {
+            scanResults.innerHTML =
+              '<div class="status status-error">Upload failed: ' + esc(res.error || "unknown") + '</div>';
+          }
+        })
+        .catch(function (err) {
+          renderScanned(msg.data);
+          var errDiv = document.createElement("div");
+          errDiv.className = "status status-error";
+          errDiv.textContent = "Connection error: " + err.message;
+          scanResults.appendChild(errDiv);
+        });
+    }
+
+    if (msg.type === "variables-result") {
+      varScanBtn.classList.remove("scanning");
+      if (msg.error) {
+        varStatus.innerHTML = '<div class="status status-error">' + esc(msg.error) + '</div>';
+        return;
+      }
+      var varData = msg.data;
+      // Push to server
+      fetch(SERVER + "/variables", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(varData)
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (res.ok) {
+            varStatus.innerHTML = '<div class="status status-success">Variables uploaded. ' +
+              varData.collections.length + ' collection(s), ' + varData.totalVariables + ' variable(s).</div>';
+          } else {
+            varStatus.innerHTML = '<div class="status status-error">Upload failed: ' + esc(res.error || "unknown") + '</div>';
+          }
+        })
+        .catch(function (err) {
+          varStatus.innerHTML = '<div class="status status-error">Connection error: ' + esc(err.message) + '</div>';
+        });
+      recordEvent({ type: "variables", detail: varData.collections.length + " collection(s), " + varData.totalVariables + " variable(s)" });
+      // Render locally
+      renderVariables(varData);
+    }
+
+    if (msg.type === "deep-scan-result") {
+      matrixScanBtn.classList.remove("scanning");
+      if (msg.error) {
+        matrixStatus.innerHTML = '<div class="status status-error">' + esc(msg.error) + '</div>';
+        return;
+      }
+      matrixData = msg.data;
+      matrixStatus.innerHTML = '<div class="status status-success">Found ' +
+        msg.data.instances.length + ' configurable instance(s) in "' +
+        esc(msg.data.rootName) + '"</div>';
+      renderMatrixTree(msg.data);
+      matrixFooter.style.display = msg.data.instances.length > 0 ? "block" : "none";
+      updateMatrixCounter();
+      recordEvent({ type: "deep-scan", detail: msg.data.instances.length + " instance(s) in " + msg.data.rootName });
+    }
+
+    if (msg.type === "generate-result") {
+      if (msg.error) {
+        matrixStatus.innerHTML = '<div class="status status-error">' + esc(msg.error) + '</div>';
+      } else {
+        var genMsg = "Generated " + msg.generated + " variant screen(s)";
+        if (msg.errors && msg.errors.length > 0) {
+          genMsg += " with " + msg.errors.length + " warning(s)";
+        }
+        matrixStatus.innerHTML = '<div class="status status-success">' + genMsg + '</div>';
+        recordEvent({ type: "generate", detail: msg.generated + " variant(s)", count: msg.generated || 0 });
+      }
+      matrixGenerateBtn.disabled = false;
+      updateMatrixCounter();
+    }
+
+    if (msg.type === "before-thumbnails") {
+      if (captureBeforeTimeout) { clearTimeout(captureBeforeTimeout); captureBeforeTimeout = null; }
+      var thumbs = msg.thumbnails || {};
+      for (var tid in thumbs) {
+        if (thumbs.hasOwnProperty(tid)) {
+          beforeThumbnails[tid] = thumbs[tid];
+        }
+      }
+      // Now send apply-renames
+      parent.postMessage({ pluginMessage: { type: "apply-renames", renames: pendingOperations } }, "*");
+      return;
+    }
+
+    if (msg.type === "after-thumbnails") {
+      if (applyCompleteTimeout) { clearTimeout(applyCompleteTimeout); applyCompleteTimeout = null; }
+      var athumb = msg.thumbnails || {};
+      for (var atid in athumb) {
+        if (athumb.hasOwnProperty(atid)) {
+          afterThumbnails[atid] = athumb[atid];
+        }
+      }
+      renderThumbnails();
+      isApplying = false;
+      return;
+    }
+
+    if (msg.type === "select-node-result") {
+      if (!msg.success) {
+        var btns = resultsArea.querySelectorAll('.result-card-locate[data-node-id="' + msg.id + '"]');
+        for (var bi = 0; bi < btns.length; bi++) {
+          var btn = btns[bi];
+          var origHtml = btn.innerHTML;
+          btn.innerHTML = '<span style="font-size:7px;color:#525252;">Not found</span>';
+          btn.classList.add("disabled");
+          (function(b, oh) {
+            setTimeout(function() {
+              b.innerHTML = oh;
+              b.classList.remove("disabled");
+            }, 3000);
+          })(btn, origHtml);
+        }
+        // Also check refresh results
+        var refreshResultsEl = document.getElementById("refresh-results");
+        if (refreshResultsEl) {
+          var rBtns = refreshResultsEl.querySelectorAll('.result-card-locate[data-node-id="' + msg.id + '"]');
+          for (var rbi = 0; rbi < rBtns.length; rbi++) {
+            var rbtn = rBtns[rbi];
+            var rOrigHtml = rbtn.innerHTML;
+            rbtn.innerHTML = '<span style="font-size:7px;color:#525252;">Not found</span>';
+            rbtn.classList.add("disabled");
+            (function(b, oh) {
+              setTimeout(function() {
+                b.innerHTML = oh;
+                b.classList.remove("disabled");
+              }, 3000);
+            })(rbtn, rOrigHtml);
+          }
+        }
+      }
+      return;
+    }
+
+    if (msg.type === "apply-result") {
+      var appliedCount = msg.applied || 0;
+      var errorsList = msg.errors || [];
+      pendingCreatedNodes = msg.createdNodes || [];
+
+      renderNodeCards(pendingOperations, pendingCreatedNodes, appliedCount, errorsList);
+      renderThumbnails();
+
+      fetch(SERVER + "/renames/ack", { method: "POST" }).catch(function () {});
+
+      recordEvent({ type: "apply", mode: lastApplyMode, count: appliedCount, errors: errorsList.length });
+
+      if (errorsList.length === 0) {
+        setStatus(appliedCount + " operation(s) applied successfully.", "success");
+      } else {
+        setStatus(appliedCount + " applied, " + errorsList.length + " error(s).", "error");
+      }
+
+      if (applyCompleteTimeout) clearTimeout(applyCompleteTimeout);
+      applyCompleteTimeout = setTimeout(function() {
+        applyCompleteTimeout = null;
+        if (isApplying) {
+          isApplying = false;
+          renderThumbnails();
+        }
+      }, 10000);
+
+      lastApplyMode = "auto";
+      return;
+    }
+
+    if (msg.type === "refresh-before-thumbnail") {
+      if (refreshBeforeTimeout) { clearTimeout(refreshBeforeTimeout); refreshBeforeTimeout = null; }
+      refreshRootId = msg.rootId;
+      refreshBeforeThumbnail = msg.data || null;
+      if (msg.rootId === null) {
+        // No selection — stop here, refresh-instances would just error
+        refreshIsRunning = false;
+        var rBtn = document.getElementById("refresh-btn");
+        rBtn.classList.remove("scanning");
+        return;
+      }
+      // Now send refresh-instances
+      parent.postMessage({ pluginMessage: { type: "refresh-instances" } }, "*");
+      return;
+    }
+
+    if (msg.type === "refresh-after-thumbnail") {
+      if (refreshAfterTimeout) { clearTimeout(refreshAfterTimeout); refreshAfterTimeout = null; }
+      refreshAfterThumbnail = msg.data || null;
+      renderRefreshThumbnails();
+      refreshIsRunning = false;
+      return;
+    }
+
+    if (msg.type === "refresh-result") {
+      var rBtn = document.getElementById("refresh-btn");
+      var rStatus = document.getElementById("refresh-status");
+      rBtn.classList.remove("scanning");
+
+      if (msg.error) {
+        rStatus.innerHTML = '<div class="status status-error">' + esc(msg.error) + '</div>';
+        refreshIsRunning = false;
+        return;
+      }
+
+      rStatus.innerHTML = '<div class="status status-success">Refresh complete</div>';
+      recordEvent({ type: "refresh", detail: msg.refreshed + " of " + msg.found + " instance(s) refreshed" });
+
+      renderRefreshResults(msg);
+
+      // 10s safety timeout for after-thumbnail
+      if (refreshAfterTimeout) clearTimeout(refreshAfterTimeout);
+      refreshAfterTimeout = setTimeout(function() {
+        refreshAfterTimeout = null;
+        if (refreshIsRunning) {
+          refreshIsRunning = false;
+          refreshAfterThumbnail = null;
+          renderRefreshThumbnails();
+        }
+      }, 10000);
+      return;
+    }
+  };
+
+  var collapseCounter = 0;
+  function makeCollapsible(title, count, innerHtml) {
+    var id = "collapse-" + (collapseCounter++);
+    var html = '<div class="collapse-header" data-collapse="' + id + '">';
+    html += '<span class="collapse-arrow" id="arrow-' + id + '">&#9654;</span>';
+    html += '<span class="collapse-title">' + title + '</span>';
+    html += '<span class="collapse-count">' + count + '</span>';
+    html += '</div>';
+    html += '<div class="collapse-body" id="body-' + id + '">' + innerHtml + '</div>';
+    return html;
+  }
+
+  function bindCollapseListeners(container) {
+    var headers = container.querySelectorAll(".collapse-header");
+    for (var i = 0; i < headers.length; i++) {
+      headers[i].addEventListener("click", function () {
+        var id = this.getAttribute("data-collapse");
+        var body = document.getElementById("body-" + id);
+        var arrow = document.getElementById("arrow-" + id);
+        var isOpen = body.classList.contains("open");
+        body.classList.toggle("open", !isOpen);
+        arrow.classList.toggle("open", !isOpen);
+      });
+    }
+  }
+
+  function renderScanned(data) {
+    var html = "";
+    var components = data.components || [];
+    var textNodes = data.textNodes || [];
+    var instances = data.instances || [];
+
+    if (components.length > 0) {
+      var compHtml = "";
+      for (var c = 0; c < components.length; c++) {
+        var comp = components[c];
+        compHtml += '<div class="component-card">';
+        compHtml += '<div class="component-name">' + esc(comp.name) + '</div>';
+        if (comp.properties) {
+          var keys = Object.keys(comp.properties);
+          for (var k = 0; k < keys.length; k++) {
+            var prop = comp.properties[keys[k]];
+            compHtml += '<div class="prop-row">';
+            compHtml += '<span class="prop-name">' + esc(keys[k]) + '</span>';
+            if (prop.variantOptions && prop.variantOptions.length > 0) {
+              compHtml += '<span class="prop-values">' + prop.variantOptions.map(esc).join(", ") + '</span>';
+            } else {
+              compHtml += '<span class="prop-values">(' + esc(prop.type) + ')</span>';
+            }
+            compHtml += '</div>';
+          }
+        }
+        if (comp.variants) {
+          compHtml += '<div style="margin-top:4px;font-size:10px;color:#a3a3a3;">' + comp.variants.length + ' variant(s)</div>';
+        }
+        compHtml += '</div>';
+      }
+      html += makeCollapsible("Components", components.length, compHtml);
+    }
+
+    if (instances.length > 0) {
+      var instHtml = "";
+      for (var n = 0; n < instances.length; n++) {
+        instHtml += '<div class="prop-row">';
+        instHtml += '<span class="prop-name">' + esc(instances[n].name) + '</span>';
+        instHtml += '<span class="prop-values">' + esc(instances[n].mainComponent ? instances[n].mainComponent.name : "") + '</span>';
+        instHtml += '</div>';
+      }
+      html += makeCollapsible("Instances", instances.length, instHtml);
+    }
+
+    if (textNodes.length > 0) {
+      var textHtml = "";
+      for (var t = 0; t < textNodes.length; t++) {
+        textHtml += '<div class="prop-row">';
+        textHtml += '<span class="prop-name">' + esc(textNodes[t].name) + '</span>';
+        textHtml += '<span class="prop-values">"' + esc(textNodes[t].characters) + '"</span>';
+        textHtml += '</div>';
+      }
+      html += makeCollapsible("Text Nodes", textNodes.length, textHtml);
+    }
+
+    scanResults.innerHTML = html;
+    bindCollapseListeners(scanResults);
+  }
+
+  function renderNodeCards(operations, createdNodes, appliedCount, errorsList) {
+    var groups = {};
+    var groupOrder = [];
+
+    for (var i = 0; i < operations.length; i++) {
+      var op = operations[i];
+      var nodeId = getNodeIdForOp(op);
+      if (nodeId) {
+        if (!groups[nodeId]) {
+          groups[nodeId] = { name: op.name || op.id || nodeId, type: "", ops: [], isCreated: false, isDeleted: op.type === "delete", locateId: nodeId };
+          groupOrder.push(nodeId);
+        }
+        groups[nodeId].ops.push(op);
+        if (op.type === "delete") groups[nodeId].isDeleted = true;
+      }
+    }
+
+    var sortedCreated = (createdNodes || []).slice().sort(function(a, b) {
+      var ai = parseInt(a.tempKey.split("_")[1], 10);
+      var bi = parseInt(b.tempKey.split("_")[1], 10);
+      return ai - bi;
+    });
+    var createOps = [];
+    for (var ci = 0; ci < operations.length; ci++) {
+      var cop = operations[ci];
+      if (cop.type === "duplicate" || (cop.type && cop.type.indexOf("create_") === 0)) {
+        createOps.push(cop);
+      }
+    }
+    for (var cri = 0; cri < createOps.length; cri++) {
+      var cn = (sortedCreated && sortedCreated[cri]) ? sortedCreated[cri] : null;
+      var key = cn ? cn.nodeId : ("created_" + cri);
+      groups[key] = {
+        name: cn ? cn.nodeName : (createOps[cri].name || createOps[cri].type),
+        type: cn ? cn.nodeType : "",
+        ops: [createOps[cri]],
+        isCreated: true,
+        isDeleted: false,
+        locateId: cn ? cn.nodeId : null
+      };
+      groupOrder.push(key);
+    }
+
+    var nodeCount = groupOrder.length;
+    var errorCount = errorsList ? errorsList.length : 0;
+    var defaultExpanded = nodeCount <= 5;
+
+    var locateSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor"><path d="M232,116h-4.72A100.21,100.21,0,0,0,140,28.72V24a12,12,0,0,0-24,0v4.72A100.21,100.21,0,0,0,28.72,116H24a12,12,0,0,0,0,24h4.72A100.21,100.21,0,0,0,116,227.28V232a12,12,0,0,0,24,0v-4.72A100.21,100.21,0,0,0,227.28,140H232a12,12,0,0,0,0-24Zm-92,87v-3a12,12,0,0,0-24,0v3a76.15,76.15,0,0,1-63-63h3a12,12,0,0,0,0-24H53a76.15,76.15,0,0,1,63-63v3a12,12,0,0,0,24,0V53a76.15,76.15,0,0,1,63,63h-3a12,12,0,0,0,0,24h3A76.15,76.15,0,0,1,140,203ZM128,84a44,44,0,1,0,44,44A44.05,44.05,0,0,0,128,84Zm0,64a20,20,0,1,1,20-20A20,20,0,0,1,128,148Z"/></svg>';
+
+    var html = '<div class="result-summary">';
+    html += '<span>' + appliedCount + ' operation(s) across ' + nodeCount + ' node(s)</span>';
+    if (errorCount > 0) {
+      html += '<span class="result-summary-errors">' + errorCount + ' error(s)</span>';
+    }
+    html += '</div>';
+
+    for (var gi = 0; gi < groupOrder.length; gi++) {
+      var gid = groupOrder[gi];
+      var g = groups[gid];
+      var cardId = "result-card-" + gi;
+      var isExpanded = defaultExpanded;
+      var locateDisabled = g.isDeleted || !g.locateId;
+
+      html += '<div class="result-card" id="' + cardId + '">';
+
+      html += '<div class="result-card-header" data-card-id="' + cardId + '">';
+      html += '<span class="result-card-arrow' + (isExpanded ? ' open' : '') + '" id="' + cardId + '-arrow">&#9654;</span>';
+      html += '<span class="result-card-name">' + esc(g.name) + '</span>';
+      if (g.type) {
+        html += '<span class="result-card-type">' + esc(g.type) + '</span>';
+      }
+      if (g.isDeleted) {
+        html += '<span class="result-card-type" style="color:#525252;">DELETED</span>';
+      } else if (g.isCreated) {
+        html += '<span class="result-card-type" style="color:#404040;">CREATED</span>';
+      }
+      html += '<div class="result-card-locate' + (locateDisabled ? ' disabled' : '') + '" data-node-id="' + (g.locateId || '') + '">' + locateSvg + '</div>';
+      html += '</div>';
+
+      html += '<div class="result-card-body' + (isExpanded ? ' open' : '') + '" id="' + cardId + '-body">';
+
+      html += '<div class="result-thumbnails" id="' + cardId + '-thumbs">';
+      if (!g.isCreated) {
+        html += '<div class="result-thumb-col"><div class="result-thumb-label">Before</div><div class="result-thumb-placeholder" id="' + cardId + '-before">Capturing...</div></div>';
+      }
+      if (!g.isDeleted) {
+        html += '<div class="result-thumb-col"><div class="result-thumb-label">After</div><div class="result-thumb-placeholder" id="' + cardId + '-after">Capturing...</div></div>';
+      }
+      html += '</div>';
+
+      html += '<div class="result-ops">';
+      for (var oi = 0; oi < g.ops.length; oi++) {
+        html += '<div class="result-op-line">' + getCardText(g.ops[oi]) + '</div>';
+      }
+      html += '</div>';
+
+      html += '</div>';
+      html += '</div>';
+    }
+
+    resultsArea.innerHTML = html;
+
+    // Attach card header collapse/expand listeners
+    var cardHeaders = resultsArea.querySelectorAll(".result-card-header");
+    for (var hi = 0; hi < cardHeaders.length; hi++) {
+      cardHeaders[hi].addEventListener("click", function() {
+        var cid = this.getAttribute("data-card-id");
+        var body = document.getElementById(cid + "-body");
+        var arrow = document.getElementById(cid + "-arrow");
+        var isOpen = body.classList.contains("open");
+        body.classList.toggle("open", !isOpen);
+        arrow.classList.toggle("open", !isOpen);
+      });
+    }
+
+    var locateBtns = resultsArea.querySelectorAll(".result-card-locate:not(.disabled)");
+    for (var li = 0; li < locateBtns.length; li++) {
+      locateBtns[li].addEventListener("click", function(e) {
+        e.stopPropagation();
+        var nodeId = this.getAttribute("data-node-id");
+        if (nodeId) {
+          parent.postMessage({ pluginMessage: { type: "select-node", id: nodeId } }, "*");
+        }
+      });
+    }
+
+    lastGroupOrder = groupOrder;
+    lastGroups = groups;
+  }
+
+  function renderThumbnails() {
+    if (!lastGroupOrder.length) return;
+    var groupOrder = lastGroupOrder;
+    var groups = lastGroups;
+
+    for (var gi = 0; gi < groupOrder.length; gi++) {
+      var gid = groupOrder[gi];
+      var g = groups[gid];
+      var cardId = "result-card-" + gi;
+
+      if (!g.isCreated) {
+        var beforeEl = document.getElementById(cardId + "-before");
+        if (beforeEl) {
+          var thumbData = beforeThumbnails[gid];
+          if (thumbData) {
+            var b64 = uint8ToBase64(new Uint8Array(thumbData));
+            beforeEl.outerHTML = '<img class="result-thumb-img before' + (g.isDeleted ? ' result-thumb-deleted' : '') + '" src="data:image/png;base64,' + b64 + '">';
+          } else if (thumbData === null) {
+            beforeEl.textContent = "Preview unavailable";
+          }
+        }
+      }
+
+      if (!g.isDeleted) {
+        var afterEl = document.getElementById(cardId + "-after");
+        if (afterEl) {
+          var afterThumbData = afterThumbnails[gid];
+          if (afterThumbData) {
+            var ab64 = uint8ToBase64(new Uint8Array(afterThumbData));
+            afterEl.outerHTML = '<img class="result-thumb-img" src="data:image/png;base64,' + ab64 + '">';
+          } else if (afterThumbData === null) {
+            afterEl.textContent = "Preview unavailable";
+          }
+        }
+      }
+    }
+  }
+
+  function renderRefreshResults(msg) {
+    var rResults = document.getElementById("refresh-results");
+
+    var locateSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor"><path d="M232,116h-4.72A100.21,100.21,0,0,0,140,28.72V24a12,12,0,0,0-24,0v4.72A100.21,100.21,0,0,0,28.72,116H24a12,12,0,0,0,0,24h4.72A100.21,100.21,0,0,0,116,227.28V232a12,12,0,0,0,24,0v-4.72A100.21,100.21,0,0,0,227.28,140H232a12,12,0,0,0,0-24Zm-92,87v-3a12,12,0,0,0-24,0v3a76.15,76.15,0,0,1-63-63h3a12,12,0,0,0,0-24H53a76.15,76.15,0,0,1,63-63v3a12,12,0,0,0,24,0V53a76.15,76.15,0,0,1,63,63h-3a12,12,0,0,0,0,24h3A76.15,76.15,0,0,1,140,203ZM128,84a44,44,0,1,0,44,44A44.05,44.05,0,0,0,128,84Zm0,64a20,20,0,1,1,20-20A20,20,0,0,1,128,148Z"/></svg>';
+
+    var instances = msg.instances || [];
+    var refreshedList = [];
+    var skippedList = [];
+    for (var i = 0; i < instances.length; i++) {
+      if (instances[i].status === "refreshed") {
+        refreshedList.push(instances[i]);
+      } else {
+        skippedList.push(instances[i]);
+      }
+    }
+
+    // Summary bar
+    var html = '<div class="result-summary">';
+    html += '<span>Refreshed ' + msg.refreshed + ' of ' + msg.found + ' instance(s)';
+    if (msg.skipped > 0) {
+      html += ' (' + msg.skipped + ' skipped)';
+    }
+    html += '</span>';
+    html += '</div>';
+
+    // Frame before/after thumbnails
+    html += '<div class="refresh-frame-diff">';
+    html += '<div class="result-thumb-col"><div class="result-thumb-label">Before</div>';
+    html += '<div class="result-thumb-placeholder" id="refresh-before-img">Capturing...</div>';
+    html += '</div>';
+    html += '<div class="result-thumb-col"><div class="result-thumb-label">After</div>';
+    html += '<div class="result-thumb-placeholder" id="refresh-after-img">Capturing...</div>';
+    html += '</div>';
+    html += '</div>';
+
+    // Refreshed section
+    if (refreshedList.length > 0) {
+      var refreshedExpanded = refreshedList.length <= 10;
+      html += '<div class="refresh-section-header" data-section="refresh-refreshed">';
+      html += '<span class="refresh-section-arrow' + (refreshedExpanded ? ' open' : '') + '" id="arrow-refresh-refreshed">&#9654;</span>';
+      html += '<span>Refreshed</span>';
+      html += '<span class="refresh-section-count">' + refreshedList.length + '</span>';
+      html += '</div>';
+      html += '<div class="refresh-section-body' + (refreshedExpanded ? ' open' : '') + '" id="body-refresh-refreshed">';
+      for (var ri = 0; ri < refreshedList.length; ri++) {
+        var rinst = refreshedList[ri];
+        var rLocateDisabled = !rinst.nodeId;
+        html += '<div class="result-card">';
+        html += '<div class="result-card-header">';
+        html += '<span class="result-card-name">' + esc(rinst.name) + '</span>';
+        html += '<div class="result-card-locate' + (rLocateDisabled ? ' disabled' : '') + '" data-node-id="' + (rinst.nodeId || '') + '">' + locateSvg + '</div>';
+        html += '</div>';
+        html += '</div>';
+      }
+      html += '</div>';
+    }
+
+    // Skipped section
+    if (skippedList.length > 0) {
+      html += '<div class="refresh-section-header" data-section="refresh-skipped">';
+      html += '<span class="refresh-section-arrow" id="arrow-refresh-skipped">&#9654;</span>';
+      html += '<span>Skipped</span>';
+      html += '<span class="refresh-section-count">' + skippedList.length + '</span>';
+      html += '</div>';
+      html += '<div class="refresh-section-body" id="body-refresh-skipped">';
+      for (var si = 0; si < skippedList.length; si++) {
+        var sinst = skippedList[si];
+        var sLocateDisabled = !sinst.nodeId;
+        html += '<div class="result-card">';
+        html += '<div class="result-card-header">';
+        html += '<span class="result-card-name">' + esc(sinst.name) + '</span>';
+        html += '<div class="result-card-locate' + (sLocateDisabled ? ' disabled' : '') + '" data-node-id="' + (sinst.nodeId || '') + '">' + locateSvg + '</div>';
+        html += '</div>';
+        if (sinst.reason) {
+          html += '<div class="refresh-skip-reason">' + esc(sinst.reason) + '</div>';
+        }
+        html += '</div>';
+      }
+      html += '</div>';
+    }
+
+    rResults.innerHTML = html;
+
+    // Bind section header toggle listeners
+    var sectionHeaders = rResults.querySelectorAll(".refresh-section-header");
+    for (var sh = 0; sh < sectionHeaders.length; sh++) {
+      sectionHeaders[sh].addEventListener("click", function() {
+        var sectionId = this.getAttribute("data-section");
+        var body = document.getElementById("body-" + sectionId);
+        var arrow = document.getElementById("arrow-" + sectionId);
+        var isOpen = body.classList.contains("open");
+        body.classList.toggle("open", !isOpen);
+        arrow.classList.toggle("open", !isOpen);
+      });
+    }
+
+    // Bind locate button listeners
+    var locateBtns = rResults.querySelectorAll(".result-card-locate:not(.disabled)");
+    for (var lb = 0; lb < locateBtns.length; lb++) {
+      locateBtns[lb].addEventListener("click", function(e) {
+        e.stopPropagation();
+        var nodeId = this.getAttribute("data-node-id");
+        if (nodeId) {
+          parent.postMessage({ pluginMessage: { type: "select-node", id: nodeId } }, "*");
+        }
+      });
+    }
+
+    // Render thumbnails that are already available
+    renderRefreshThumbnails();
+  }
+
+  function renderRefreshThumbnails() {
+    var beforeEl = document.getElementById("refresh-before-img");
+    if (beforeEl && refreshBeforeThumbnail) {
+      var b64 = uint8ToBase64(new Uint8Array(refreshBeforeThumbnail));
+      beforeEl.outerHTML = '<img class="result-thumb-img before" src="data:image/png;base64,' + b64 + '">';
+    } else if (beforeEl && refreshBeforeThumbnail === null) {
+      beforeEl.textContent = "Preview unavailable";
+    }
+
+    var afterEl = document.getElementById("refresh-after-img");
+    if (afterEl && refreshAfterThumbnail) {
+      var ab64 = uint8ToBase64(new Uint8Array(refreshAfterThumbnail));
+      afterEl.outerHTML = '<img class="result-thumb-img" src="data:image/png;base64,' + ab64 + '">';
+    } else if (afterEl && refreshAfterThumbnail === null) {
+      afterEl.textContent = "Preview unavailable";
+    }
+  }
+
+  // --- Stats / Activity Log ---
+  var statsHeader = document.getElementById("stats-header");
+  var statsPanel = document.getElementById("stats-panel");
+  var statsToggleIcon = document.getElementById("stats-toggle-icon");
+  var statsOpen = false;
+  var lastApplyMode = "auto";
+
+  statsHeader.addEventListener("click", function () {
+    statsOpen = !statsOpen;
+    statsPanel.classList.toggle("open", statsOpen);
+    statsToggleIcon.classList.toggle("open", statsOpen);
+    if (statsOpen) fetchStats();
+  });
+
+  function fetchStats() {
+    fetch(SERVER + "/stats")
+      .then(function (r) { return r.json(); })
+      .then(function (stats) { renderStats(stats); })
+      .catch(function () {});
+  }
+
+  function renderStats(stats) {
+    document.getElementById("stat-scans").textContent = stats.scans || 0;
+    document.getElementById("stat-applied").textContent = stats.totalApplied || 0;
+    document.getElementById("stat-auto").textContent = stats.autoApplies || 0;
+    document.getElementById("stat-manual").textContent = stats.manualApplies || 0;
+    document.getElementById("stat-var-scans").textContent = stats.variableScans || 0;
+    document.getElementById("stat-deep-scans").textContent = stats.deepScans || 0;
+    document.getElementById("stat-variants").textContent = stats.variantsGenerated || 0;
+    document.getElementById("stat-refreshes").textContent = stats.refreshes || 0;
+
+    var list = document.getElementById("history-list");
+    var history = (stats.history || []).slice().reverse();
+    if (history.length === 0) {
+      list.innerHTML = '<div style="color:#a3a3a3;font-size:10px;padding:4px 0;">No activity recorded.</div>';
+      return;
+    }
+    var html = "";
+    for (var i = 0; i < history.length; i++) {
+      var h = history[i];
+      var iconClass, iconText, detail;
+
+      if (h.type === "scan") {
+        iconClass = "scan";
+        iconText = "S";
+        detail = "Scanned" + (h.detail ? " — " + esc(h.detail) : "");
+      } else if (h.type === "apply") {
+        iconClass = h.mode === "manual" ? "manual" : "auto";
+        iconText = h.mode === "manual" ? "M" : "A";
+        detail = h.count + " operation(s) applied";
+        if (h.errors > 0) detail += " (" + h.errors + " failed)";
+      } else if (h.type === "variables") {
+        iconClass = "variables";
+        iconText = "V";
+        detail = "Variables scanned" + (h.detail ? " — " + esc(h.detail) : "");
+      } else if (h.type === "deep-scan") {
+        iconClass = "deep-scan";
+        iconText = "D";
+        detail = "Deep scan" + (h.detail ? " — " + esc(h.detail) : "");
+      } else if (h.type === "generate") {
+        iconClass = "generate";
+        iconText = "G";
+        detail = "Generated" + (h.detail ? " " + esc(h.detail) : "");
+      } else if (h.type === "refresh") {
+        iconClass = "refresh";
+        iconText = "R";
+        detail = "Refresh" + (h.detail ? " — " + esc(h.detail) : "");
+      } else {
+        iconClass = "scan";
+        iconText = "?";
+        detail = h.type + (h.detail ? " — " + esc(h.detail) : "");
+      }
+
+      var time = formatTime(h.timestamp);
+      html += '<div class="history-item">';
+      html += '<div class="history-icon ' + iconClass + '">' + iconText + '</div>';
+      html += '<div class="history-detail">' + detail + '</div>';
+      html += '<div class="history-time">' + time + '</div>';
+      html += '</div>';
+    }
+    list.innerHTML = html;
+  }
+
+  function formatTime(iso) {
+    try {
+      var d = new Date(iso);
+      var now = new Date();
+      var diffMs = now - d;
+      var diffMin = Math.floor(diffMs / 60000);
+      if (diffMin < 1) return "just now";
+      if (diffMin < 60) return diffMin + "m ago";
+      var diffHr = Math.floor(diffMin / 60);
+      if (diffHr < 24) return diffHr + "h ago";
+      return d.toLocaleDateString();
+    } catch (e) {
+      return "";
+    }
+  }
+
+  function renderVariables(data) {
+    var html = "";
+    var collections = data.collections || [];
+    for (var c = 0; c < collections.length; c++) {
+      var col = collections[c];
+      html += '<div class="var-collection">';
+      html += '<div class="var-collection-name">' + esc(col.name) + '</div>';
+      html += '<div class="var-modes">';
+      for (var m = 0; m < col.modes.length; m++) {
+        html += '<span class="var-mode-tag">' + esc(col.modes[m].name) + '</span>';
+      }
+      html += '</div>';
+      var vars = col.variables || [];
+      for (var v = 0; v < vars.length; v++) {
+        var vr = vars[v];
+        html += '<div class="var-item">';
+        html += '<span class="var-name">' + esc(vr.name) + '</span>';
+        html += '<span class="var-type">' + esc(vr.resolvedType) + '</span>';
+        // Show values per mode
+        var valParts = [];
+        for (var mv = 0; mv < col.modes.length; mv++) {
+          var modeId = col.modes[mv].modeId;
+          var val = vr.valuesByMode[modeId];
+          if (val !== undefined) {
+            var valStr = typeof val === "object" ? JSON.stringify(val) : String(val);
+            valParts.push(esc(col.modes[mv].name) + ": " + esc(valStr));
+          }
+        }
+        if (valParts.length > 0) {
+          html += '<span class="var-values">' + valParts.join(" | ") + '</span>';
+        }
+        html += '</div>';
+      }
+      html += '</div>';
+    }
+    varResults.innerHTML = html;
+  }
+
+  // --- Tab switching ---
+  var tabBtns = document.querySelectorAll(".tab-btn");
+  for (var ti = 0; ti < tabBtns.length; ti++) {
+    tabBtns[ti].addEventListener("click", function () {
+      var tabName = this.getAttribute("data-tab");
+      var allBtns = document.querySelectorAll(".tab-btn");
+      var allTabs = document.querySelectorAll(".tab-content");
+      for (var j = 0; j < allBtns.length; j++) { allBtns[j].classList.remove("active"); }
+      for (var k = 0; k < allTabs.length; k++) { allTabs[k].classList.remove("active"); }
+      this.classList.add("active");
+      document.getElementById("tab-" + tabName).classList.add("active");
+    });
+  }
+
+  // --- Variables tab ---
+  var varScanBtn = document.getElementById("var-scan-btn");
+  var varStatus = document.getElementById("var-status");
+  var varResults = document.getElementById("var-results");
+
+  varScanBtn.addEventListener("click", function () {
+    varScanBtn.classList.add("scanning");
+    varStatus.innerHTML = '<div class="status status-info">Scanning variable collections...</div>';
+    varResults.innerHTML = "";
+    parent.postMessage({ pluginMessage: { type: "scan-variables" } }, "*");
+  });
+
+  // --- Refresh tab ---
+  var refreshBtn = document.getElementById("refresh-btn");
+  var refreshStatus = document.getElementById("refresh-status");
+  var refreshResults = document.getElementById("refresh-results");
+
+  refreshBtn.addEventListener("click", function () {
+    if (refreshIsRunning) return;
+    refreshIsRunning = true;
+
+    // Reset refresh thumbnail state
+    refreshBeforeThumbnail = null;
+    refreshAfterThumbnail = null;
+    refreshRootId = null;
+    if (refreshBeforeTimeout) { clearTimeout(refreshBeforeTimeout); refreshBeforeTimeout = null; }
+    if (refreshAfterTimeout) { clearTimeout(refreshAfterTimeout); refreshAfterTimeout = null; }
+
+    refreshBtn.classList.add("scanning");
+    refreshStatus.innerHTML = '<div class="status status-info">Refreshing instances...</div>';
+    refreshResults.innerHTML = "";
+
+    // Capture before-thumbnail first, then refresh
+    parent.postMessage({ pluginMessage: { type: "capture-refresh-before" } }, "*");
+
+    // 8s safety timeout: if before-thumbnail never arrives, proceed without it
+    refreshBeforeTimeout = setTimeout(function() {
+      refreshBeforeTimeout = null;
+      if (refreshIsRunning && !refreshBeforeThumbnail) {
+        parent.postMessage({ pluginMessage: { type: "refresh-instances" } }, "*");
+      }
+    }, 8000);
+  });
+
+  function recordEvent(eventData) {
+    fetch(SERVER + "/stats/event", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(eventData)
+    }).then(function () {
+      if (statsOpen) fetchStats();
+    }).catch(function () {});
+  }
+
+  // --- Matrix tab ---
+  var matrixScanBtn = document.getElementById("matrix-scan-btn");
+  var matrixStatus = document.getElementById("matrix-status");
+  var matrixTree = document.getElementById("matrix-tree");
+  var matrixFooter = document.getElementById("matrix-footer");
+  var matrixCounter = document.getElementById("matrix-counter");
+  var matrixGenerateBtn = document.getElementById("matrix-generate-btn");
+  var matrixColsInput = document.getElementById("matrix-cols");
+  var matrixSpacingInput = document.getElementById("matrix-spacing");
+  var matrixData = null;
+
+  matrixScanBtn.addEventListener("click", function () {
+    matrixScanBtn.classList.add("scanning");
+    matrixStatus.innerHTML = '<div class="status status-info">Deep scanning instance tree...</div>';
+    matrixTree.innerHTML = "";
+    matrixFooter.style.display = "none";
+    parent.postMessage({ pluginMessage: { type: "deep-scan" } }, "*");
+  });
+
+  function renderInstanceCard(inst, i, indent) {
+    var propKeys = Object.keys(inst.properties);
+    var variantProps = [];
+    for (var k = 0; k < propKeys.length; k++) {
+      if (inst.properties[propKeys[k]].options.length > 1) {
+        variantProps.push(propKeys[k]);
+      }
+    }
+    if (variantProps.length === 0) return "";
+
+    var html = '<div class="matrix-instance" style="margin-left:' + indent + 'px;">';
+    html += '<div class="matrix-instance-name">';
+    html += esc(inst.name);
+    if (inst.depth === 0) {
+      html += ' <span class="matrix-instance-depth">root</span>';
+    } else {
+      html += ' <span class="matrix-instance-depth">depth ' + inst.depth + '</span>';
+    }
+    html += '</div>';
+
+    for (var v = 0; v < variantProps.length; v++) {
+      var pKey = variantProps[v];
+      var prop = inst.properties[pKey];
+      var displayName = pKey.indexOf("#") !== -1 ? pKey.substring(0, pKey.indexOf("#")) : pKey;
+
+      html += '<div class="matrix-prop-row">';
+      html += '<input type="checkbox" class="matrix-checkbox" ';
+      html += 'data-instance="' + i + '" data-prop="' + encodeURIComponent(pKey) + '">';
+      html += '<span class="matrix-prop-key">' + esc(displayName) + '</span>';
+      html += '<span class="matrix-prop-value">' + esc(String(prop.value)) + '</span>';
+      html += '<span class="matrix-prop-options">' + prop.options.length + ' opts: ';
+      html += prop.options.map(function (o) { return esc(String(o)); }).join(", ");
+      html += '</span>';
+      html += '</div>';
+    }
+
+    html += '</div>';
+    return html;
+  }
+
+  function renderMatrixTree(data) {
+    var instances = data.instances;
+
+    // Group instances by depth
+    var depthGroups = {};
+    var maxDepth = 0;
+    for (var i = 0; i < instances.length; i++) {
+      var inst = instances[i];
+      var card = renderInstanceCard(inst, i, 0);
+      if (!card) continue;
+      var d = inst.depth;
+      if (!depthGroups[d]) depthGroups[d] = [];
+      depthGroups[d].push(card);
+      if (d > maxDepth) maxDepth = d;
+    }
+
+    var html = "";
+    var depthKeys = Object.keys(depthGroups).sort(function (a, b) { return a - b; });
+
+    for (var di = 0; di < depthKeys.length; di++) {
+      var depth = parseInt(depthKeys[di]);
+      var cards = depthGroups[depth];
+
+      if (depth === 0) {
+        // Root — always visible
+        for (var r = 0; r < cards.length; r++) {
+          html += cards[r];
+        }
+      } else {
+        // Nested depth — collapsible
+        var label = "Layer " + depth + " — " + cards.length + " instance" + (cards.length !== 1 ? "s" : "");
+        html += '<div class="matrix-nested-toggle" data-depth="' + depth + '">';
+        html += '<span class="toggle-arrow" data-depth-arrow="' + depth + '">&#9654;</span> ' + label;
+        html += '</div>';
+        html += '<div class="matrix-nested-section" data-depth-section="' + depth + '">';
+        for (var n = 0; n < cards.length; n++) {
+          html += cards[n];
+        }
+        html += '</div>';
+      }
+    }
+
+    if (html === "") {
+      html = '<div class="status status-info">No variant or boolean properties found in the instance tree.</div>';
+    }
+
+    matrixTree.innerHTML = html;
+
+    // Bind all depth toggles
+    var toggles = matrixTree.querySelectorAll(".matrix-nested-toggle");
+    for (var ti = 0; ti < toggles.length; ti++) {
+      toggles[ti].addEventListener("click", function () {
+        var depth = this.getAttribute("data-depth");
+        var section = matrixTree.querySelector('[data-depth-section="' + depth + '"]');
+        var arrow = matrixTree.querySelector('[data-depth-arrow="' + depth + '"]');
+        var isOpen = section.classList.contains("open");
+        section.classList.toggle("open", !isOpen);
+        arrow.classList.toggle("open", !isOpen);
+      });
+    }
+
+    // Bind all checkboxes
+    var checkboxes = matrixTree.querySelectorAll(".matrix-checkbox");
+    for (var cb = 0; cb < checkboxes.length; cb++) {
+      checkboxes[cb].addEventListener("change", updateMatrixCounter);
+    }
+  }
+
+  function getSelectedAxes() {
+    if (!matrixData) return [];
+    var checkboxes = matrixTree.querySelectorAll(".matrix-checkbox:checked");
+    var axes = [];
+    for (var i = 0; i < checkboxes.length; i++) {
+      var cb = checkboxes[i];
+      var instIdx = parseInt(cb.getAttribute("data-instance"));
+      var propKey = decodeURIComponent(cb.getAttribute("data-prop"));
+      var inst = matrixData.instances[instIdx];
+      if (!inst) continue;
+      var prop = inst.properties[propKey];
+      if (!prop) continue;
+      axes.push({
+        instanceIndex: instIdx,
+        path: inst.path,
+        propKey: propKey,
+        options: prop.options,
+        currentValue: prop.value
+      });
+    }
+    return axes;
+  }
+
+  function updateMatrixCounter() {
+    var axes = getSelectedAxes();
+
+    if (axes.length === 0) {
+      matrixCounter.innerHTML = '<div class="matrix-counter-label">Select properties to include in the variant matrix</div>';
+      matrixGenerateBtn.disabled = true;
+      matrixGenerateBtn.textContent = "GENERATE VARIANTS";
+      return;
+    }
+
+    var total = 1;
+    var parts = [];
+    for (var i = 0; i < axes.length; i++) {
+      total *= axes[i].options.length;
+      parts.push(String(axes[i].options.length));
+    }
+
+    var toGenerate = total - 1;
+
+    var html = '<div class="matrix-counter-number">' + total + '</div>';
+    html += '<div class="matrix-counter-label">total variant combinations</div>';
+    html += '<div class="matrix-counter-formula">' + parts.join(" &times; ") + ' = ' + total + ' (will generate ' + toGenerate + ' new screen' + (toGenerate !== 1 ? 's' : '') + ')</div>';
+
+    if (total > 50) {
+      html += '<div class="matrix-counter-warning">Warning: Large number of variants. Consider selecting fewer properties.</div>';
+    }
+    if (total > 200) {
+      html += '<div class="matrix-counter-warning">Limit: Max 200 combinations. Deselect some properties.</div>';
+    }
+
+    matrixCounter.innerHTML = html;
+    matrixGenerateBtn.disabled = total > 200 || toGenerate === 0;
+    matrixGenerateBtn.textContent = toGenerate > 0 ? "GENERATE " + toGenerate + " VARIANT" + (toGenerate !== 1 ? "S" : "") : "GENERATE VARIANTS";
+  }
+
+  function cartesianProduct(arrays) {
+    var result = [[]];
+    for (var i = 0; i < arrays.length; i++) {
+      var newResult = [];
+      for (var j = 0; j < result.length; j++) {
+        for (var k = 0; k < arrays[i].length; k++) {
+          newResult.push(result[j].concat([arrays[i][k]]));
+        }
+      }
+      result = newResult;
+    }
+    return result;
+  }
+
+  matrixGenerateBtn.addEventListener("click", function () {
+    if (!matrixData) return;
+    var axes = getSelectedAxes();
+    if (axes.length === 0) return;
+
+    var optionArrays = [];
+    for (var i = 0; i < axes.length; i++) {
+      optionArrays.push(axes[i].options);
+    }
+    var allCombos = cartesianProduct(optionArrays);
+
+    // Build current state to skip it
+    var currentCombo = [];
+    for (var c = 0; c < axes.length; c++) {
+      currentCombo.push(axes[c].currentValue);
+    }
+
+    var combinations = [];
+    for (var ci = 0; ci < allCombos.length; ci++) {
+      var combo = allCombos[ci];
+      var isCurrent = true;
+      for (var cc = 0; cc < combo.length; cc++) {
+        if (String(combo[cc]) !== String(currentCombo[cc])) {
+          isCurrent = false;
+          break;
+        }
+      }
+      if (isCurrent) continue;
+
+      // Group changes by instance path
+      var changeMap = {};
+      var nameParts = [];
+      for (var ai = 0; ai < axes.length; ai++) {
+        var pathStr = axes[ai].path.join(",");
+        if (!changeMap[pathStr]) {
+          changeMap[pathStr] = { path: axes[ai].path, properties: {} };
+        }
+        changeMap[pathStr].properties[axes[ai].propKey] = combo[ai];
+        var displayKey = axes[ai].propKey;
+        if (displayKey.indexOf("#") !== -1) displayKey = displayKey.substring(0, displayKey.indexOf("#"));
+        nameParts.push(displayKey + "=" + combo[ai]);
+      }
+
+      var changes = [];
+      var changeKeys = Object.keys(changeMap);
+      for (var ck = 0; ck < changeKeys.length; ck++) {
+        changes.push(changeMap[changeKeys[ck]]);
+      }
+
+      combinations.push({
+        name: matrixData.rootName + " \u2014 " + nameParts.join(", "),
+        changes: changes
+      });
+    }
+
+    if (combinations.length === 0) {
+      matrixStatus.innerHTML = '<div class="status status-info">No new variants to generate.</div>';
+      return;
+    }
+
+    matrixGenerateBtn.disabled = true;
+    matrixGenerateBtn.textContent = "GENERATING...";
+    matrixStatus.innerHTML = '<div class="status status-info">Generating ' + combinations.length + ' variant(s)...</div>';
+
+    parent.postMessage({
+      pluginMessage: {
+        type: "generate-variants",
+        sourceId: matrixData.rootId,
+        combinations: combinations,
+        gridColumns: parseInt(matrixColsInput.value) || 4,
+        gridSpacingX: parseInt(matrixSpacingInput.value) || 50,
+        gridSpacingY: parseInt(matrixSpacingInput.value) || 50
+      }
+    }, "*");
+  });
+</script>
+
+</body>
+</html>
