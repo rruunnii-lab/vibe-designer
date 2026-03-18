@@ -1027,6 +1027,7 @@ figma.ui.onmessage = function (msg) {
     var skipped = 0;
     var instances = [];
     var refreshRootId = refreshRoot.id;
+    var mode = msg.mode || "refresh";
 
     var importPromises = [];
     for (var ri = 0; ri < instanceRecords.length; ri++) {
@@ -1073,9 +1074,12 @@ figma.ui.onmessage = function (msg) {
             return;
           }
           node.swapComponent(freshComponent);
+          if (mode === "reset" || mode === "factory") {
+            try { node.removeOverrides(); } catch (e) {}
+          }
           refreshed++;
           instances.push({ name: node.name, nodeId: node.id, status: "refreshed" });
-          if (record.properties) {
+          if (mode !== "factory" && record.properties) {
             try {
               node.setProperties(record.properties);
             } catch (e) { /* property keys may have changed */ }
@@ -1090,14 +1094,16 @@ figma.ui.onmessage = function (msg) {
     }
 
     Promise.all(importPromises).then(function () {
-      figma.notify("Refreshed " + refreshed + " instance(s)");
+      var notifyVerb = (mode === "reset") ? "Reset" : (mode === "factory") ? "Factory reset" : "Refreshed";
+      figma.notify(notifyVerb + " " + refreshed + " instance(s)");
       figma.ui.postMessage({
         type: "refresh-result",
         found: found,
         refreshed: refreshed,
         skipped: skipped,
         rootId: refreshRootId,
-        instances: instances
+        instances: instances,
+        mode: mode
       });
 
       // Capture after-thumbnail

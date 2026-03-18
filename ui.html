@@ -1263,6 +1263,16 @@
 
       <div class="scan-holo-label" style="color: #404040;">Refresh Instances</div>
     </div>
+    <div class="refresh-scan-btn" id="reset-btn">
+      <svg class="scan-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="#404040"><path d="M228,48V96a12,12,0,0,1-12,12H168a12,12,0,0,1,0-24h19l-7.8-7.8a75.55,75.55,0,0,0-53.32-22.26h-.43A75.49,75.49,0,0,0,72.39,75.57,12,12,0,1,1,55.61,58.41a99.38,99.38,0,0,1,69.87-28.47H126A99.42,99.42,0,0,1,196.2,59.23L204,67V48a12,12,0,0,1,24,0ZM183.61,180.43a75.49,75.49,0,0,1-53.09,21.63h-.43A75.55,75.55,0,0,1,76.77,179.8L69,172H88a12,12,0,0,0,0-24H40a12,12,0,0,0-12,12v48a12,12,0,0,0,24,0V189l7.8,7.8A99.42,99.42,0,0,0,130,226.06h.56a99.38,99.38,0,0,0,69.87-28.47,12,12,0,0,0-16.78-17.16Z"/></svg>
+
+      <div class="scan-holo-label" style="color: #404040;">Reset Overrides</div>
+    </div>
+    <div class="refresh-scan-btn" id="factory-btn">
+      <svg class="scan-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="#404040"><path d="M228,48V96a12,12,0,0,1-12,12H168a12,12,0,0,1,0-24h19l-7.8-7.8a75.55,75.55,0,0,0-53.32-22.26h-.43A75.49,75.49,0,0,0,72.39,75.57,12,12,0,1,1,55.61,58.41a99.38,99.38,0,0,1,69.87-28.47H126A99.42,99.42,0,0,1,196.2,59.23L204,67V48a12,12,0,0,1,24,0ZM183.61,180.43a75.49,75.49,0,0,1-53.09,21.63h-.43A75.55,75.55,0,0,1,76.77,179.8L69,172H88a12,12,0,0,0,0-24H40a12,12,0,0,0-12,12v48a12,12,0,0,0,24,0V189l7.8,7.8A99.42,99.42,0,0,0,130,226.06h.56a99.38,99.38,0,0,0,69.87-28.47,12,12,0,0,0-16.78-17.16Z"/></svg>
+
+      <div class="scan-holo-label" style="color: #404040;">Factory Reset</div>
+    </div>
   </div>
   <div id="refresh-status"></div>
   <div id="refresh-results"></div>
@@ -1336,6 +1346,12 @@
     var refreshBeforeTimeout = null;
     var refreshAfterTimeout = null;
     var refreshIsRunning = false;
+    var refreshMode = "refresh";
+    var statusTexts = {
+      refresh: { during: "Refreshing instances...", after: "Refresh complete" },
+      reset: { during: "Resetting overrides...", after: "Reset complete" },
+      factory: { during: "Factory resetting...", after: "Factory reset complete" }
+    };
 
     function getNodeIdForOp(op) {
       if (op.type === "property") return op.componentSetId;
@@ -1739,14 +1755,14 @@
       refreshRootId = msg.rootId;
       refreshBeforeThumbnail = msg.data || null;
       if (msg.rootId === null) {
-        // No selection — stop here, refresh-instances would just error
         refreshIsRunning = false;
-        var rBtn = document.getElementById("refresh-btn");
-        rBtn.classList.remove("scanning");
+        for (var rbi = 0; rbi < allRefreshBtns.length; rbi++) {
+          allRefreshBtns[rbi].classList.remove("scanning");
+        }
         return;
       }
-      // Now send refresh-instances
-      parent.postMessage({ pluginMessage: { type: "refresh-instances" } }, "*");
+      // Now send refresh-instances with mode
+      parent.postMessage({ pluginMessage: { type: "refresh-instances", mode: refreshMode } }, "*");
       return;
     }
 
@@ -1759,9 +1775,10 @@
     }
 
     if (msg.type === "refresh-result") {
-      var rBtn = document.getElementById("refresh-btn");
       var rStatus = document.getElementById("refresh-status");
-      rBtn.classList.remove("scanning");
+      for (var rbi = 0; rbi < allRefreshBtns.length; rbi++) {
+        allRefreshBtns[rbi].classList.remove("scanning");
+      }
 
       if (msg.error) {
         rStatus.innerHTML = '<div class="status status-error">' + esc(msg.error) + '</div>';
@@ -1769,7 +1786,8 @@
         return;
       }
 
-      rStatus.innerHTML = '<div class="status status-success">Refresh complete</div>';
+      var resultMode = msg.mode || "refresh";
+      rStatus.innerHTML = '<div class="status status-success">' + (statusTexts[resultMode] ? statusTexts[resultMode].after : "Refresh complete") + '</div>';
       recordEvent({ type: "refresh", detail: msg.refreshed + " of " + msg.found + " instance(s) refreshed" });
 
       renderRefreshResults(msg);
@@ -2060,7 +2078,8 @@
 
     // Summary bar
     var html = '<div class="result-summary">';
-    html += '<span>Refreshed ' + msg.refreshed + ' of ' + msg.found + ' instance(s)';
+    var verb = (msg.mode === "reset") ? "Reset" : (msg.mode === "factory") ? "Factory reset" : "Refreshed";
+    html += '<span>' + verb + ' ' + msg.refreshed + ' of ' + msg.found + ' instance(s)';
     if (msg.skipped > 0) {
       html += ' (' + msg.skipped + ' skipped)';
     }
@@ -2337,12 +2356,16 @@
 
   // --- Refresh tab ---
   var refreshBtn = document.getElementById("refresh-btn");
+  var resetBtn = document.getElementById("reset-btn");
+  var factoryBtn = document.getElementById("factory-btn");
   var refreshStatus = document.getElementById("refresh-status");
   var refreshResults = document.getElementById("refresh-results");
+  var allRefreshBtns = [refreshBtn, resetBtn, factoryBtn];
 
-  refreshBtn.addEventListener("click", function () {
+  function startRefresh(mode, btn) {
     if (refreshIsRunning) return;
     refreshIsRunning = true;
+    refreshMode = mode;
 
     // Reset refresh thumbnail state
     refreshBeforeThumbnail = null;
@@ -2351,8 +2374,8 @@
     if (refreshBeforeTimeout) { clearTimeout(refreshBeforeTimeout); refreshBeforeTimeout = null; }
     if (refreshAfterTimeout) { clearTimeout(refreshAfterTimeout); refreshAfterTimeout = null; }
 
-    refreshBtn.classList.add("scanning");
-    refreshStatus.innerHTML = '<div class="status status-info">Refreshing instances...</div>';
+    btn.classList.add("scanning");
+    refreshStatus.innerHTML = '<div class="status status-info">' + statusTexts[mode].during + '</div>';
     refreshResults.innerHTML = "";
 
     // Capture before-thumbnail first, then refresh
@@ -2362,10 +2385,14 @@
     refreshBeforeTimeout = setTimeout(function() {
       refreshBeforeTimeout = null;
       if (refreshIsRunning && !refreshBeforeThumbnail) {
-        parent.postMessage({ pluginMessage: { type: "refresh-instances" } }, "*");
+        parent.postMessage({ pluginMessage: { type: "refresh-instances", mode: refreshMode } }, "*");
       }
     }, 8000);
-  });
+  }
+
+  refreshBtn.addEventListener("click", function () { startRefresh("refresh", refreshBtn); });
+  resetBtn.addEventListener("click", function () { startRefresh("reset", resetBtn); });
+  factoryBtn.addEventListener("click", function () { startRefresh("factory", factoryBtn); });
 
   function recordEvent(eventData) {
     fetch(SERVER + "/stats/event", {
