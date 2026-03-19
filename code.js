@@ -1126,6 +1126,106 @@ figma.ui.onmessage = function (msg) {
     });
   }
 
+  if (msg.type === "arrange-capture") {
+    var selection = figma.currentPage.selection;
+    if (selection.length === 0) {
+      figma.ui.postMessage({
+        type: "arrange-capture-result",
+        error: "Please select frames or nodes to arrange."
+      });
+      return;
+    }
+
+    var capturePromises = [];
+
+    for (var i = 0; i < selection.length; i++) {
+      (function(node, index) {
+        var promise = withTimeout(
+          node.exportAsync({
+            format: "PNG",
+            constraint: { type: "WIDTH", value: 200 }
+          }),
+          5000
+        )
+        .then(function(data) {
+          return {
+            nodeId: node.id,
+            name: node.name,
+            width: node.width,
+            height: node.height,
+            x: node.x,
+            y: node.y,
+            image: data,
+            order: index
+          };
+        })
+        .catch(function() {
+          return {
+            nodeId: node.id,
+            name: node.name,
+            width: node.width,
+            height: node.height,
+            x: node.x,
+            y: node.y,
+            image: null,
+            order: index
+          };
+        });
+
+        capturePromises.push(promise);
+      })(selection[i], i);
+    }
+
+    Promise.all(capturePromises).then(function(results) {
+      figma.ui.postMessage({
+        type: "arrange-capture-result",
+        thumbnails: results
+      });
+    }).catch(function(e) {
+      figma.ui.postMessage({
+        type: "arrange-capture-result",
+        error: "Capture failed: " + e.message
+      });
+    });
+    return;
+  }
+
+  if (msg.type === "arrange-apply") {
+    var positions = msg.positions;
+    var applied = 0;
+    var errors = [];
+
+    for (var i = 0; i < positions.length; i++) {
+      try {
+        var node = figma.getNodeById(positions[i].nodeId);
+        if (!node) {
+          errors.push("Node " + positions[i].nodeId + " not found");
+          continue;
+        }
+
+        node.x = positions[i].x;
+        node.y = positions[i].y;
+        applied++;
+      } catch (e) {
+        errors.push("Error on " + positions[i].nodeId + ": " + e.message);
+      }
+    }
+
+    if (applied > 0) {
+      figma.notify("Arranged " + applied + " item(s)");
+    }
+    if (errors.length > 0) {
+      figma.notify(errors.length + " error(s) occurred", { error: true });
+    }
+
+    figma.ui.postMessage({
+      type: "arrange-apply-result",
+      applied: applied,
+      errors: errors
+    });
+    return;
+  }
+
   if (msg.type === "resize") {
     figma.ui.resize(msg.width, msg.height);
   }

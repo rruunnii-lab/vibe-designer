@@ -1099,6 +1099,177 @@
   }
   .result-op-line:last-child { border-bottom: none; }
 
+  /* Arrange tab */
+  #arrange-initial {
+    padding: 16px;
+    text-align: center;
+  }
+
+  #arrange-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .arrange-preview {
+    padding: 12px;
+    background: #fff;
+    border: 1px solid #d4d4d4;
+    overflow-y: auto;
+  }
+
+  .arrange-footer {
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+    padding-top: 8px;
+    border-top: 1px solid #e5e5e5;
+  }
+  .arrange-footer .btn-row {
+    margin-bottom: 8px;
+  }
+
+  .arrange-grid-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .arrange-item {
+    position: relative;
+    cursor: move;
+    border: 2px solid transparent;
+    transition: border-color 0.2s;
+    flex-shrink: 0;
+  }
+  .arrange-item:hover { border-color: #000; }
+  .arrange-item.dragging { opacity: 0.4; }
+  .arrange-item.drag-over {
+    border-color: #16a34a;
+    border-style: dashed;
+  }
+  .arrange-item img {
+    display: block;
+    width: 100px;
+    height: auto;
+    background: #f5f5f5;
+  }
+  .arrange-item-label {
+    font-size: 8px;
+    color: #525252;
+    text-align: center;
+    margin-top: 2px;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .arrange-item-number {
+    position: absolute;
+    top: 2px;
+    right: 4px;
+    background: #000;
+    color: #fff;
+    padding: 2px 6px;
+    font-size: 8px;
+    font-weight: 700;
+  }
+
+  .arrange-row-break {
+    width: 100%;
+    margin: 4px 0;
+    padding: 6px;
+    background: #fafafa;
+    border: 1px dashed #a3a3a3;
+    text-align: center;
+    cursor: pointer;
+    font-size: 10px;
+    color: #525252;
+    transition: all 0.2s;
+  }
+  .arrange-row-break:hover {
+    background: #f5f5f5;
+    border-color: #000;
+  }
+  .arrange-row-break.active {
+    background: #f0fdf4;
+    border-color: #16a34a;
+    color: #16a34a;
+  }
+  .arrange-row-break button {
+    background: none;
+    border: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    padding: 0;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .arrange-controls {
+    padding: 12px;
+    background: #f5f5f5;
+    border: 1px solid #d4d4d4;
+  }
+  .arrange-spacing-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .arrange-spacing-group {
+    flex: 1;
+  }
+  .arrange-spacing-group label {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    color: #737373;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .arrange-spacing-field {
+    display: flex;
+    align-items: center;
+    border: 1px solid #d4d4d4;
+    background: #fff;
+  }
+  .arrange-spacing-input {
+    flex: 1;
+    width: 100%;
+    padding: 6px 8px;
+    border: none;
+    font-size: 12px;
+    text-align: right;
+    outline: none;
+  }
+  .arrange-spacing-unit {
+    padding: 6px 8px;
+    font-size: 11px;
+    color: #737373;
+    background: #f5f5f5;
+    border-left: 1px solid #d4d4d4;
+  }
+
+  .arrange-validation {
+    font-size: 10px;
+    padding: 6px 8px;
+    margin-top: 8px;
+  }
+  .arrange-validation.success { color: #16a34a; background: transparent; }
+  .arrange-validation.warning {
+    color: #dc2626;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+  }
+
+  .arrange-preview::-webkit-scrollbar { width: 4px; }
+  .arrange-preview::-webkit-scrollbar-track { background: transparent; }
+  .arrange-preview::-webkit-scrollbar-thumb { background: #d4d4d4; }
+
 </style>
 </head>
 <body>
@@ -1154,6 +1325,7 @@
 <div class="tab-bar">
   <div class="tab-btn active" data-tab="designer">Designer</div>
   <div class="tab-btn" data-tab="matrix">Matrix</div>
+  <div class="tab-btn" data-tab="arrange">Arrange</div>
   <div class="tab-btn" data-tab="variables">Variables</div>
   <div class="tab-btn" data-tab="refresh">Refresh</div>
 </div>
@@ -1233,6 +1405,57 @@
     <button class="btn-generate" id="matrix-generate-btn" disabled>Generate Variants</button>
   </div>
 </div><!-- end tab-matrix -->
+
+<div class="tab-content" id="tab-arrange">
+  <!-- Initial State: Before Capture -->
+  <div id="arrange-initial">
+    <div class="step">
+      <div class="step-header">
+        <div class="step-number" style="border-color: #000000; color: #525252;">A</div>
+        <div class="step-title">Arrange Selection</div>
+      </div>
+      <div class="step-desc">Select frames or nodes in Figma, then click Arrange to capture thumbnails and organize them visually.</div>
+      <button class="btn-apply" id="arrange-btn">Arrange</button>
+    </div>
+  </div>
+
+  <div id="arrange-status"></div>
+
+  <!-- Grid State: After Capture -->
+  <div id="arrange-grid" style="display:none;">
+    <div class="arrange-preview">
+      <div class="arrange-grid-container" id="arrange-grid-container"></div>
+    </div>
+
+    <div class="arrange-footer">
+      <div class="arrange-controls">
+        <div class="arrange-spacing-row">
+          <div class="arrange-spacing-group">
+            <label>Horizontal</label>
+            <div class="arrange-spacing-field">
+              <input type="number" class="arrange-spacing-input" id="spacing-x" min="0" value="50">
+              <span class="arrange-spacing-unit">px</span>
+            </div>
+          </div>
+          <div class="arrange-spacing-group">
+            <label>Vertical</label>
+            <div class="arrange-spacing-field">
+              <input type="number" class="arrange-spacing-input" id="spacing-y" min="0" value="50">
+              <span class="arrange-spacing-unit">px</span>
+            </div>
+          </div>
+        </div>
+        <div id="arrange-validation" class="arrange-validation"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-apply" id="arrange-apply-btn" style="flex:1;">Apply</button>
+        <button class="btn-secondary" id="arrange-reverse-btn">Reverse</button>
+        <button class="btn-secondary" id="arrange-reset-btn">Reset</button>
+      </div>
+    </div>
+  </div>
+</div><!-- end tab-arrange -->
 
 <div class="tab-content" id="tab-variables">
   <div class="step">
@@ -1804,6 +2027,45 @@
       }, 10000);
       return;
     }
+
+    if (msg.type === 'arrange-capture-result') {
+      var arrBtn = document.getElementById('arrange-btn');
+      var arrStatus = document.getElementById('arrange-status');
+      arrBtn.disabled = false;
+      arrBtn.textContent = 'ARRANGE';
+
+      if (msg.error) {
+        arrStatus.innerHTML = '<div class="status status-error">' + esc(msg.error) + '</div>';
+        return;
+      }
+
+      arrangeState = {
+        thumbnails: msg.thumbnails,
+        rowBreaks: [],
+        spacingX: parseInt(document.getElementById('spacing-x').value) || 50,
+        spacingY: parseInt(document.getElementById('spacing-y').value) || 50
+      };
+
+      arrStatus.innerHTML = '';
+      document.getElementById('arrange-initial').style.display = 'none';
+      document.getElementById('arrange-grid').style.display = 'flex';
+      renderArrangeGrid();
+      return;
+    }
+
+    if (msg.type === 'arrange-apply-result') {
+      var applyBtn = document.getElementById('arrange-apply-btn');
+      applyBtn.disabled = false;
+      applyBtn.textContent = 'APPLY';
+
+      var arrStatus2 = document.getElementById('arrange-status');
+      if (msg.errors && msg.errors.length > 0) {
+        arrStatus2.innerHTML = '<div class="status status-error">Arranged ' + msg.applied + ' item(s), ' + msg.errors.length + ' error(s)</div>';
+      } else if (msg.applied > 0) {
+        arrStatus2.innerHTML = '<div class="status status-success">Arranged ' + msg.applied + ' item(s)</div>';
+      }
+      return;
+    }
   };
 
   var collapseCounter = 0;
@@ -2333,12 +2595,25 @@
   for (var ti = 0; ti < tabBtns.length; ti++) {
     tabBtns[ti].addEventListener("click", function () {
       var tabName = this.getAttribute("data-tab");
+
+      // Clear arrange state when switching away
+      if (currentTab === 'arrange' && tabName !== 'arrange') {
+        arrangeState = null;
+        document.getElementById('arrange-initial').style.display = 'block';
+        document.getElementById('arrange-grid').style.display = 'none';
+        var arrBtn = document.getElementById('arrange-btn');
+        arrBtn.disabled = false;
+        arrBtn.textContent = 'ARRANGE';
+        document.getElementById('arrange-status').innerHTML = '';
+      }
+
       var allBtns = document.querySelectorAll(".tab-btn");
       var allTabs = document.querySelectorAll(".tab-content");
       for (var j = 0; j < allBtns.length; j++) { allBtns[j].classList.remove("active"); }
       for (var k = 0; k < allTabs.length; k++) { allTabs[k].classList.remove("active"); }
       this.classList.add("active");
       document.getElementById("tab-" + tabName).classList.add("active");
+      currentTab = tabName;
     });
   }
 
@@ -2677,6 +2952,267 @@
         gridSpacingY: parseInt(matrixSpacingInput.value) || 50
       }
     }, "*");
+  });
+
+  // --- Arrange tab ---
+  var arrangeState = null;
+  var currentTab = 'designer';
+
+  function uint8ToDataUrl(uint8Array) {
+    var binary = '';
+    for (var i = 0; i < uint8Array.length; i++) {
+      binary += String.fromCharCode(uint8Array[i]);
+    }
+    return 'data:image/png;base64,' + btoa(binary);
+  }
+
+  function calculateGridLayout(state) {
+    var items = state.thumbnails;
+    var rowBreaks = state.rowBreaks;
+    var spacingX = state.spacingX;
+    var spacingY = state.spacingY;
+
+    var xValues = [];
+    var yValues = [];
+    for (var v = 0; v < items.length; v++) {
+      xValues.push(items[v].x);
+      yValues.push(items[v].y);
+    }
+    var minX = Math.min.apply(null, xValues);
+    var minY = Math.min.apply(null, yValues);
+
+    var rows = [];
+    var currentRow = [];
+    for (var i = 0; i < items.length; i++) {
+      currentRow.push(items[i]);
+      if (rowBreaks.indexOf(i) !== -1 || i === items.length - 1) {
+        rows.push(currentRow);
+        currentRow = [];
+      }
+    }
+
+    var currentY = minY;
+    var positions = [];
+
+    for (var r = 0; r < rows.length; r++) {
+      var row = rows[r];
+      var currentX = minX;
+      var heights = [];
+      for (var h = 0; h < row.length; h++) { heights.push(row[h].height); }
+      var maxHeightInRow = Math.max.apply(null, heights);
+
+      for (var c = 0; c < row.length; c++) {
+        positions.push({
+          nodeId: row[c].nodeId,
+          x: currentX,
+          y: currentY,
+          width: row[c].width,
+          height: row[c].height
+        });
+        currentX += row[c].width + spacingX;
+      }
+
+      currentY += maxHeightInRow + spacingY;
+    }
+
+    return positions;
+  }
+
+  function checkOverlaps(positions) {
+    for (var i = 0; i < positions.length; i++) {
+      for (var j = i + 1; j < positions.length; j++) {
+        var a = positions[i];
+        var b = positions[j];
+        var overlapX = a.x < (b.x + b.width) && (a.x + a.width) > b.x;
+        var overlapY = a.y < (b.y + b.height) && (a.y + a.height) > b.y;
+        if (overlapX && overlapY) return true;
+      }
+    }
+    return false;
+  }
+
+  function updateValidationDisplay() {
+    if (!arrangeState) return;
+    var positions = calculateGridLayout(arrangeState);
+    var validationEl = document.getElementById('arrange-validation');
+    if (checkOverlaps(positions)) {
+      validationEl.className = 'arrange-validation warning';
+      validationEl.textContent = 'Items may overlap. Increase spacing to prevent this.';
+    } else {
+      validationEl.className = 'arrange-validation success';
+      validationEl.textContent = 'No overlaps detected';
+    }
+  }
+
+  function renderArrangeGrid() {
+    if (!arrangeState) return;
+    var container = document.getElementById('arrange-grid-container');
+    var html = '';
+
+    for (var i = 0; i < arrangeState.thumbnails.length; i++) {
+      var item = arrangeState.thumbnails[i];
+      var safeName = esc(item.name);
+      var imgSrc = item.image ? uint8ToDataUrl(item.image) : '';
+      var imgTag = imgSrc
+        ? '<img src="' + imgSrc + '" alt="' + safeName + '" />'
+        : '<div style="width:100px;height:60px;background:#e5e5e5;display:flex;align-items:center;justify-content:center;font-size:9px;color:#737373;">' + safeName + '</div>';
+
+      html += '<div class="arrange-item" draggable="true" data-index="' + i + '">';
+      html += '<div class="arrange-item-number">' + (i + 1) + '</div>';
+      html += imgTag;
+      html += '<div class="arrange-item-label">' + safeName + '</div>';
+      html += '</div>';
+
+      if (i < arrangeState.thumbnails.length - 1) {
+        var isActive = arrangeState.rowBreaks.indexOf(i) !== -1;
+        html += '<div class="arrange-row-break' + (isActive ? ' active' : '') + '" data-after="' + i + '">';
+        html += '<button onclick="toggleRowBreak(' + i + ')">' + (isActive ? 'Remove Row Break' : 'Add Row Break') + '</button>';
+        html += '</div>';
+      }
+    }
+
+    container.innerHTML = html;
+    attachDragHandlers();
+    updateValidationDisplay();
+  }
+
+  // Drag-and-drop
+  var draggedIndex = null;
+
+  function attachDragHandlers() {
+    var items = document.querySelectorAll('.arrange-item');
+    for (var i = 0; i < items.length; i++) {
+      items[i].addEventListener('dragstart', function(e) {
+        draggedIndex = parseInt(this.getAttribute('data-index'));
+        this.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+      });
+
+      items[i].addEventListener('dragend', function() {
+        this.classList.remove('dragging');
+        var allItems = document.querySelectorAll('.arrange-item');
+        for (var j = 0; j < allItems.length; j++) {
+          allItems[j].classList.remove('drag-over');
+        }
+      });
+
+      items[i].addEventListener('dragover', function(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        this.classList.add('drag-over');
+      });
+
+      items[i].addEventListener('dragleave', function() {
+        this.classList.remove('drag-over');
+      });
+
+      items[i].addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.classList.remove('drag-over');
+        var targetIndex = parseInt(this.getAttribute('data-index'));
+
+        if (draggedIndex !== null && draggedIndex !== targetIndex) {
+          var item = arrangeState.thumbnails.splice(draggedIndex, 1)[0];
+          arrangeState.thumbnails.splice(targetIndex, 0, item);
+          updateRowBreaksAfterReorder(draggedIndex, targetIndex);
+          renderArrangeGrid();
+        }
+        draggedIndex = null;
+      });
+    }
+  }
+
+  function updateRowBreaksAfterReorder(fromIndex, toIndex) {
+    var newBreaks = [];
+    for (var i = 0; i < arrangeState.rowBreaks.length; i++) {
+      var b = arrangeState.rowBreaks[i];
+      if (fromIndex < toIndex) {
+        if (b === fromIndex) { newBreaks.push(toIndex); }
+        else if (b > fromIndex && b <= toIndex) { newBreaks.push(b - 1); }
+        else { newBreaks.push(b); }
+      } else {
+        if (b === fromIndex) { newBreaks.push(toIndex); }
+        else if (b >= toIndex && b < fromIndex) { newBreaks.push(b + 1); }
+        else { newBreaks.push(b); }
+      }
+    }
+    arrangeState.rowBreaks = newBreaks;
+  }
+
+  // Global function for row break onclick handlers
+  window.toggleRowBreak = function(index) {
+    var breakIndex = arrangeState.rowBreaks.indexOf(index);
+    if (breakIndex !== -1) {
+      arrangeState.rowBreaks.splice(breakIndex, 1);
+    } else {
+      arrangeState.rowBreaks.push(index);
+      arrangeState.rowBreaks.sort(function(a, b) { return a - b; });
+    }
+    renderArrangeGrid();
+  };
+
+  // Spacing controls
+  var spacingXInput = document.getElementById('spacing-x');
+  var spacingYInput = document.getElementById('spacing-y');
+
+  spacingXInput.addEventListener('input', function() {
+    if (!arrangeState) return;
+    arrangeState.spacingX = parseInt(this.value) || 0;
+    updateValidationDisplay();
+  });
+
+  spacingYInput.addEventListener('input', function() {
+    if (!arrangeState) return;
+    arrangeState.spacingY = parseInt(this.value) || 0;
+    updateValidationDisplay();
+  });
+
+  // Arrange button (triggers capture)
+  var arrangeBtn = document.getElementById('arrange-btn');
+  var arrangeStatus = document.getElementById('arrange-status');
+
+  arrangeBtn.addEventListener('click', function() {
+    arrangeBtn.disabled = true;
+    arrangeBtn.textContent = 'CAPTURING...';
+    arrangeStatus.innerHTML = '<div class="status status-info">Capturing thumbnails...</div>';
+    parent.postMessage({ pluginMessage: { type: 'arrange-capture' } }, '*');
+  });
+
+  // Apply button
+  var arrangeApplyBtn = document.getElementById('arrange-apply-btn');
+
+  arrangeApplyBtn.addEventListener('click', function() {
+    if (!arrangeState) return;
+    var positions = calculateGridLayout(arrangeState);
+    arrangeApplyBtn.disabled = true;
+    arrangeApplyBtn.textContent = 'APPLYING...';
+    parent.postMessage({
+      pluginMessage: {
+        type: 'arrange-apply',
+        positions: positions
+      }
+    }, '*');
+  });
+
+  // Reset button
+  var arrangeResetBtn = document.getElementById('arrange-reset-btn');
+
+  var arrangeReverseBtn = document.getElementById('arrange-reverse-btn');
+
+  arrangeReverseBtn.addEventListener('click', function() {
+    if (!arrangeState) return;
+    arrangeState.thumbnails.reverse();
+    arrangeState.rowBreaks = [];
+    renderArrangeGrid();
+  });
+
+  arrangeResetBtn.addEventListener('click', function() {
+    arrangeState = null;
+    document.getElementById('arrange-initial').style.display = 'block';
+    document.getElementById('arrange-grid').style.display = 'none';
+    arrangeBtn.disabled = false;
+    arrangeBtn.textContent = 'ARRANGE';
+    arrangeStatus.innerHTML = '';
   });
 </script>
 
